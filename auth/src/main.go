@@ -7,71 +7,83 @@ import (
 	"github.com/starshine-bcit/bby-buohub/auth/util"
 )
 
-var db = make(map[string]string)
+var (
+    db = make(map[string]string)
+)
 
 func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
-	r := gin.Default()
+    gin.DisableConsoleColor()
+    r := gin.Default()
 
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
+    r.GET("/ping", func(c *gin.Context) {
+        c.String(http.StatusOK, "pong")
+    })
 
-	// Get user value
-	r.GET("/user/:name", func(c *gin.Context) {
-		user := c.Params.ByName("name")
-		value, ok := db[user]
-		if ok {
-			c.JSON(http.StatusOK, gin.H{"user": user, "value": value})
-		} else {
-			c.JSON(http.StatusOK, gin.H{"user": user, "status": "no value"})
-		}
-	})
+    r.GET("/login", func(c *gin.Context) {
+        // add validation logic here
+        ok := true
+        if ok {
 
-	// Authorized group (uses gin.BasicAuth() middleware)
-	// Same than:
-	// authorized := r.Group("/")
-	// authorized.Use(gin.BasicAuth(gin.Credentials{
-	//	  "foo":  "bar",
-	//	  "manu": "123",
-	//}))
-	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
-		"foo":  "bar", // user:foo password:bar
-		"manu": "123", // user:manu password:123
-	}))
+        } else {
+            c.JSON(http.StatusUnauthorized, gin.H{"login": "login", "okay": "no"})
+        }
+    })
 
-	/* example curl for /admin with basicauth header
-	   Zm9vOmJhcg== is base64("foo:bar")
+    // Get user value
+    r.GET("/user/:name", func(c *gin.Context) {
+        _ = c.Request.Header
+        user := c.Params.ByName("name")
+        value, ok := db[user]
+        if ok {
+            c.JSON(http.StatusOK, gin.H{"user": user, "value": value})
+        } else {
+            c.JSON(http.StatusOK, gin.H{"user": user, "status": "no value"})
+        }
+    })
 
-		curl -X POST \
-	  	http://localhost:8080/admin \
-	  	-H 'authorization: Basic Zm9vOmJhcg==' \
-	  	-H 'content-type: application/json' \
-	  	-d '{"value":"bar"}'
-	*/
-	authorized.POST("admin", func(c *gin.Context) {
-		user := c.MustGet(gin.AuthUserKey).(string)
+    // Authorized group (uses gin.BasicAuth() middleware)
+    // Same than:
+    // authorized := r.Group("/")
+    // authorized.Use(gin.BasicAuth(gin.Credentials{
+    //	  "foo":  "bar",
+    //	  "manu": "123",
+    //}))
+    authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
+        "foo":  "bar", // user:foo password:bar
+        "manu": "123", // user:manu password:123
+    }))
 
-		// Parse JSON
-		var json struct {
-			Value string `json:"value" binding:"required"`
-		}
+    /* example curl for /admin with basicauth header
+       Zm9vOmJhcg== is base64("foo:bar")
 
-		if c.Bind(&json) == nil {
-			db[user] = json.Value
-			c.JSON(http.StatusOK, gin.H{"status": "ok"})
-		}
-	})
+        curl -X POST \
+          http://localhost:8080/admin \
+          -H 'authorization: Basic Zm9vOmJhcg==' \
+          -H 'content-type: application/json' \
+          -d '{"value":"bar"}'
+    */
+    authorized.POST("admin", func(c *gin.Context) {
+        user := c.MustGet(gin.AuthUserKey).(string)
 
-	return r
+        // Parse JSON
+        var json struct {
+            Value string `json:"value" binding:"required"`
+        }
+
+        if c.Bind(&json) == nil {
+            db[user] = json.Value
+            c.JSON(http.StatusOK, gin.H{"status": "ok"})
+        }
+    })
+
+    return r
 }
 
 func main() {
-	cfg := util.Load_config()
-	util.InfoLogger.Printf("Config: %+v", cfg)
-	// r := setupRouter()
-	// // Listen and Server in 0.0.0.0:8080
-	// r.Run(":8080")
+    _ = util.Load_config()
+    util.InfoLogger.Println("Successfully parsed config and env")
+    util.LoadKey()
+    util.InfoLogger.Println("Successfully parsed key files")
+    // r := setupRouter()
+    // r.Run(fmt.Sprintf("%v:%v", cfg.Server.Host, cfg.Server.Port))
 }
