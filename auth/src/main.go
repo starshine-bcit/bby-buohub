@@ -1,30 +1,11 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/starshine-bcit/bby-buohub/auth/util"
 )
-
-var (
-    WarningLogger *log.Logger
-    InfoLogger    *log.Logger
-    ErrorLogger   *log.Logger
-)
-
-func init() {
-    file, err := os.OpenFile("auth.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-    WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-    ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
-}
 
 var db = make(map[string]string)
 
@@ -89,7 +70,7 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	cfg := util.Load_config()
-	InfoLogger.Printf("Config: %+v", cfg)
+	util.InfoLogger.Printf("Config: %+v", cfg)
 	// r := setupRouter()
 	// // Listen and Server in 0.0.0.0:8080
 	// r.Run(":8080")

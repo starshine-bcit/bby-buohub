@@ -1,0 +1,2 @@
+INFO: 2024/02/12 19:06:20 main.go:98: Config: &{Server:{Host:auth Port:80} Database:{Username:auth Host:db Port:6612 Password:}}
+INFO: 2024/02/12 19:12:39 main.go:73: Config: &{Server:{Host:auth Port:80} Database:{Username:auth Host:db Port:6612 Password:test}}

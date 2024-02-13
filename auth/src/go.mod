@@ -5,7 +5,6 @@ go 1.22.0
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -33,5 +32,5 @@ require (
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // direct
 )

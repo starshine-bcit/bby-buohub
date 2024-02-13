@@ -2,12 +2,11 @@ package util
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/kelseyhightower/envconfig"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -19,39 +18,43 @@ type Config struct {
 		Username string `yaml:"user"`
 		Host string `yaml:"host"`
 		Port int `yaml:"port"`
-		Password string `yaml:"pass" envconfig:"DB_USERNAME"`
+		Password string `yaml:"pass" envconfig:"DB_PASSWORD"`
 	} `yaml:"database"`
 }
 
 func Load_config() *Config {
-	var cfg *Config
+	cfg := new(Config)
 	var cfgPath string
 	env := os.Getenv("SERVER_ENV")
 	if env != "dev" && env != "prod" {
-		log.Fatalln("SERVER_ENV environment variable must be set to dev or prod")
+		ErrorLogger.Fatalln("SERVER_ENV environment variable must be set to dev or prod")
 	}
 	ex, err := os.Executable()
 	if err != nil {
-		log.Fatalln(err)
+		ErrorLogger.Fatalln(err)
 	}
 	cfgPath = filepath.Join(
-		filepath.Dir(ex),
+		filepath.Dir(filepath.Dir(ex)),
 		"config",
 		fmt.Sprintf("%v.config.yaml", env),
 	)
+	fmt.Printf("Opening config file: %v\n", cfgPath)
 	f, err := os.Open(cfgPath)
 	if err != nil {
-		log.Fatalln(err)
+		ErrorLogger.Fatalln(err)
 	}
 	defer f.Close()
 	decoder := yaml.NewDecoder(f)
 	err = decoder.Decode(cfg)
 	if err != nil {
-		log.Fatalln(err)
+		ErrorLogger.Fatalln(err)
 	}
 	err = envconfig.Process("", cfg)
 	if err != nil {
-		log.Fatalln(err)
+		ErrorLogger.Fatalln(err)
+	}
+	if cfg.Database.Password == "" {
+		ErrorLogger.Fatalln("The DB_PASSWORD environment variable is not set")
 	}
 	return cfg
 }
