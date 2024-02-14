@@ -59,15 +59,6 @@ func DecodeKey(pemEncoded string, pemEncodedPub string) (*ecdsa.PrivateKey, *ecd
 }
 
 func decodeByesKey(pemEncoded []byte, pemEncodedPub []byte) (*ecdsa.PrivateKey, *ecdsa.PublicKey) {
-	// block, _ := pem.Decode(pemEncoded)
-	// x509Encoded := block.Bytes
-	// privateKey, _ := x509.ParseECPrivateKey(x509Encoded)
-
-	// blockPub, _ := pem.Decode(pemEncodedPub)
-	// x509EncodedPub := blockPub.Bytes
-	// genericPublicKey, _ := x509.ParsePKIXPublicKey(x509EncodedPub)
-	// publicKey := genericPublicKey.(*ecdsa.PublicKey)
-
 	privateKey, err := jwt.ParseECPrivateKeyFromPEM(pemEncoded)
 	if err != nil {
 		ErrorLogger.Fatalln("Failed to parse ECDSA private key from PEM")

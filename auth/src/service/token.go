@@ -43,10 +43,6 @@ func ParseAccessToken(accessToken string) (*jwt.Token, *UserClaims, error) {
 		util.WarningLogger.Printf("Error when validating access token. err: %v\n", err.Error())
 		return nil, nil, &ParsingError{parsedAccessToken}
 	}
-	// if !parsedAccessToken.Valid {
-	// 	util.WarningLogger.Println("Parsed access token is not valid")
-	// 	return nil, &TokenError{claims}
-	// }
 	return parsedAccessToken, claims, nil
 }
 
@@ -63,9 +59,5 @@ func ParseRefreshToken(refreshToken string) (*jwt.Token, *UserClaims, error) {
 		util.WarningLogger.Printf("Error when validating refresh token. err: %v\n", err.Error())
 		return nil, nil, &ParsingError{parsedRefreshToken}
 	}
-	// if !parsedRefreshToken.Valid {
-	// 	util.WarningLogger.Println("Parsed access token is not valid")
-	// 	return nil, &TokenError{claims}
-	// }
 	return parsedRefreshToken, claims, nil
 }
