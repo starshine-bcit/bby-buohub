@@ -20,13 +20,13 @@ func (e *ParsingError) Error() string {
     return fmt.Sprintf("Could not parse token. Token: %+v\n", e.Token)
 }
 
-func NewAccessToken(claims UserClaims) (string, error) {
+func NewAccessToken(claims *UserClaims) (string, error) {
     accessToken := jwt.NewWithClaims(jwt.SigningMethodES384, claims)
     return accessToken.SignedString(util.PrivKey)
 }
 
-func NewRefreshToken(claims UserClaims) (string, error) {
-    refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+func NewRefreshToken(claims *UserClaims) (string, error) {
+    refreshToken := jwt.NewWithClaims(jwt.SigningMethodES384, claims)
     return refreshToken.SignedString(util.PrivKey)
 }
 
@@ -36,11 +36,11 @@ func ParseAccessToken(accessToken string) (*jwt.Token, *UserClaims, error) {
         accessToken,
         claims,
         func(token *jwt.Token) (interface{}, error) {
-            return util.PrivKey, nil
+            return util.PubKey, nil
         },
     )
     if err != nil {
-        util.WarningLogger.Println("Error when validating access token")
+        util.WarningLogger.Printf("Error when validating access token. err: %v\n", err.Error())
         return nil, nil, &ParsingError{parsedAccessToken}
     }
     // if !parsedAccessToken.Valid {
@@ -54,13 +54,13 @@ func ParseRefreshToken(refreshToken string) (*jwt.Token, *UserClaims, error) {
     claims := new(UserClaims)
     parsedRefreshToken, err := jwt.ParseWithClaims(
         refreshToken,
-        *claims,
+        claims,
         func(token *jwt.Token) (interface{}, error) {
-            return util.PrivKey, nil
+            return util.PubKey, nil
         },
     )
     if err != nil {
-        util.WarningLogger.Println("Error when validating refresh token")
+        util.WarningLogger.Printf("Error when validating refresh token. err: %v\n", err.Error())
         return nil, nil, &ParsingError{parsedRefreshToken}
     }
     // if !parsedRefreshToken.Valid {

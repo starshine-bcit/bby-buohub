@@ -3,6 +3,7 @@ server:
   port: 9000
 database:
   user: auth
-  host: db
+  host: localhost
   port: 6612
+  name: auth
   pass: ""

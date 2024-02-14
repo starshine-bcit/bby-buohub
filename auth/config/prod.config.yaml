@@ -5,4 +5,5 @@ database:
   user: auth
   host: db
   port: 6612
+  name: user
   pass: ""

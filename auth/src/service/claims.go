@@ -1,11 +1,17 @@
 package service
 
 import (
+	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/starshine-bcit/bby-buohub/auth/util"
+	"gorm.io/gorm"
 )
+
+var Usernames = []string{}
 
 type TokenError struct {
     Claims *UserClaims
@@ -47,41 +53,43 @@ func GenUserRefreshClaims(username string) (*UserClaims) {
     return claims
 }
 
-func ValidateUserClaims(token *jwt.Token, claims *UserClaims) (error) {
+func ValidateUserClaims(token *jwt.Token, claims *UserClaims, db *gorm.DB) (error) {
     if !token.Valid {
         return &TokenError{claims}
     }
-    // check username in db/cache
+	username := claims.Username
+    if !slices.Contains(Usernames, username) {
+		if exists := CheckUsername(db, username); exists {
+			Usernames = append(Usernames, username)
+		} else {
+			return errors.New("claimed username does not exist")
+		}
+    }
     return nil
 }
 
-func ValidateRequestHeader(h map[string][]string) (map[string][]string, error) {
-    accessTokens, ok := h["Accesstoken"]
-    if !ok || len(accessTokens) < 1 {
-        return nil, &HeaderError{h}
-    }
-    refreshTokens, ok := h["Refreshtoken"]
-    if !ok || len(refreshTokens) < 1 {
-        return nil, &HeaderError{h}
-    }
-    accessToken, accessClaims, err := ParseAccessToken(accessTokens[0])
+func ValidateAuthRequest(b *util.TokenBody, db *gorm.DB) (*util.TokenBody, error) {
+    accessToken, accessClaims, err := ParseAccessToken(b.AccessToken)
     if err != nil {
         return nil, err
     }
-    refreshToken, refreshClaims, err := ParseRefreshToken(refreshTokens[0])
-    err = ValidateUserClaims(accessToken, accessClaims)
+    refreshToken, refreshClaims, err := ParseRefreshToken(b.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+    err = ValidateUserClaims(accessToken, accessClaims, db)
     if err != nil {
-        err = ValidateUserClaims(refreshToken, refreshClaims)
+        err = ValidateUserClaims(refreshToken, refreshClaims, db)
         if err != nil {
             return nil, err
         } else {
             newClaims := GenUserAccessClaims(accessClaims.Username)
-            newToken, err := NewAccessToken(*newClaims)
+            newToken, err := NewAccessToken(newClaims)
             if err != nil {
                 return nil, err
             } else {
-                h["Accesstoken"][0] = newToken
-                return h, nil
+                b.AccessToken = newToken
+                return b, nil
             }
         }
     }
