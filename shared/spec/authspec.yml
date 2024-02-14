@@ -1,0 +1,213 @@
+openapi: 3.0.3
+servers:
+  - url: "http://127.0.0.1:9000"
+    description: Test/Dev Server
+info:
+  description: Authentication/Authorization service for bby-buohub.
+  version: "0.1.0"
+  title: bby-buohub-auth
+  contact:
+    email: sfey1@my.bcit.ca
+  license:
+    name: AGPLv3
+    url: "https://www.gnu.org/licenses/agpl-3.0.txt"
+tags:
+  - name: internal
+    description: Meant for internal services only.
+paths:
+  /ping:
+    get:
+      tags:
+        - internal
+      summary: Is this thing on?
+      description: |
+        It send back 200 and the text "pong"
+      responses:
+        "200":
+          description: pong
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
+  /create:
+    post:
+      tags:
+        - internal
+      summary: attempt to create an account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/authBody"
+      responses:
+        "201":
+          description: account successfully created
+          content:
+            application/json::
+              schema:
+                $ref: "#/components/schemas/createResponse"
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+  /auth:
+    post:
+      tags:
+        - internal
+      summary: authorize an access token or use refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tokenBody"
+      responses:
+        "202":
+          description: token okay or refreshed
+          content:
+            application/json::
+              schema:
+                $ref: "#/components/schemas/authResponse"
+        "406":
+          description: you bad
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authResponse"
+  /login:
+    post:
+      tags:
+        - internal
+      summary: attempt to login to an account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/authBody"
+      responses:
+        "202":
+          description: login successfull
+          content:
+            application/json::
+              schema:
+                $ref: "#/components/schemas/loginResponse"
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+  /refresh:
+    post:
+      tags:
+        - internal
+      summary: utilize refresh token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tokenBody"
+      responses:
+        "202":
+          description: token refreshed
+          content:
+            application/json::
+              schema:
+                $ref: "#/components/schemas/authResponse"
+        "406":
+          description: you bad
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authResponse"
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errorResponse"
+components:
+  schemas:
+    authResponse:
+      type: object
+      required:
+        - ok
+        - refreshed
+        - newToken
+      properties:
+        ok:
+          type: boolean
+        refreshed:
+          type: boolean
+        newToken:
+          type: string
+    createResponse:
+      type: object
+      required:
+        - created
+        - accessToken
+        - refreshToken
+      properties:
+        created:
+          type: boolean
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    loginResponse:
+      type: object
+      required:
+        - valid
+        - accessToken
+        - refreshToken
+      properties:
+        valid:
+          type: boolean
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    errorResponse:
+      type: object
+      required:
+        - errorName
+        - errorText
+      properties:
+        errorName:
+          type: string
+        errorText:
+          type: string
+    tokenBody:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    authBody:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
