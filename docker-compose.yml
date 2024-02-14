@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mariadb:latest
+    hostname: db
+    restart: always
+    environment:
+      MARIADB_USER: dbuser
+      MARIADB_PASSWORD: $DB_PASSWORD
+      MARIADB_DATABASE: bby
+      MARIADB_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+    volumes:
+      - db_data:/var/lib/mysql
+    expose:
+      - "3306:3306"
+  auth:
+    image: auth
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    hostname: auth
+    restart: always
+    environment:
+      SERVER_ENV: prod
+      DB_PASSWORD: $DB_PASSWORD
+    depends_on:
+      - db
+    ports:
+      - "9000:9000"
+volumes:
+  db_data:
+  fs_data:

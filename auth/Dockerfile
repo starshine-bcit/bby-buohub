@@ -12,15 +12,17 @@ FROM alpine:3.19 AS build-release-stage
 
 LABEL version="0.1.0"
 
-WORKDIR /
-
-COPY --from=build-stage /auth /auth
-
-EXPOSE 9000
+WORKDIR /app
 
 RUN addgroup --system nonroot && adduser --system nonroot --ingroup nonroot
 
+COPY --from=build-stage --chown=nonroot:nonroot --chmod=550 /auth bin/auth
+COPY --chown=nonroot:nonroot --chmod=440 config/prod.config.yaml config/prod.config.yaml
+COPY --chown=nonroot:nonroot --chmod=440 keys ./keys/
+
+EXPOSE 9000
+
 USER nonroot:nonroot
 
-ENTRYPOINT ["/auth"]
+ENTRYPOINT ["/app/bin/auth"]
 

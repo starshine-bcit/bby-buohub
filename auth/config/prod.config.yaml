@@ -2,8 +2,8 @@ server:
   host: "0.0.0.0"
   port: 9000
 database:
-  user: auth
+  user: dbuser
   host: db
-  port: 6612
-  name: auth
+  port: 3306
+  name: bby
   pass: ""
