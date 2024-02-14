@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GPACInspect>
+    <PIDConfigure PID="2" name="audio1" StreamType="Audio" ID="2" Timescale="1000" ClockID="1"
+        Duration="888032000/1000000" Language="eng" HandlerName="AC3 5.1 @ 640 Kbps"
+        CodecID="AC3 Audio" PlaybackMode="forward" Unframed="true" SampleRate="48000"
+        NumChannels="6" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        ChannelLayout="783" AudioFormat="fltp" Bitrate="640000" URL="Sintel.2010.4k.mkv"
+        Cached="true" IsDefault="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="1" name="video1" StreamType="Visual" ID="1" Timescale="1000" ClockID="1"
+        Duration="888032000/1000000" SAR="1" Language="eng" CodecID="MPEG-4 AVC|H264 Video"
+        PlaybackMode="forward" DecoderConfig="46 bytes (CRC32 0xB67847EC)" Width="4096"
+        Height="1744" FullRange="false" ColorPrimaries="undef" ColorTransfer="undef"
+        ColorMatrix="BT709" ChromaLoc="1" FPS="24" URL="Sintel.2010.4k.mkv" Cached="true"
+        IsDefault="true" ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08"
+        Delay="-82" />
+    <PIDConfigure PID="3" name="text1" StreamType="Text" ID="3" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="ger" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true" IsDefault="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="4" name="text2" StreamType="Text" ID="4" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="eng" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="5" name="text3" StreamType="Text" ID="5" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="spa" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="6" name="text4" StreamType="Text" ID="6" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="fre" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="7" name="text5" StreamType="Text" ID="7" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="ita" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="8" name="text6" StreamType="Text" ID="8" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="dut" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="9" name="text7" StreamType="Text" ID="9" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="pol" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="10" name="text8" StreamType="Text" ID="10" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="por" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="11" name="text9" StreamType="Text" ID="11" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="rus" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+    <PIDConfigure PID="12" name="text10" StreamType="Text" ID="12" Timescale="1000" ClockID="1"
+        Duration="888032/1000" Language="vie" CodecID="Subtitle text Stream" PlaybackMode="forward"
+        Unframed="true" ColorPrimaries="undef" ColorTransfer="undef" ColorMatrix="undef"
+        StreamSubtype="1935832172" URL="Sintel.2010.4k.mkv" Cached="true"
+        ChapTimes="0,103125,148667,349792,437208,472075,678833,744083"
+        ChapNames="Chapter 01,Chapter 02,Chapter 03,Chapter 04,Chapter 05,Chapter 06,Chapter 07,Chapter 08" />
+</GPACInspect>
