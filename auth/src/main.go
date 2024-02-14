@@ -20,14 +20,14 @@ func main() {
         util.ErrorLogger.Fatalf("Could not connect to database %v\n", err)
     }
     service.Migrate(db)
-	router.Db = db
-	util.InfoLogger.Println("Successfully connected to DB and initialized tables")
+    router.Db = db
+    util.InfoLogger.Println("Successfully connected to DB and initialized tables")
     r := router.SetupRouter()
-	env := os.Getenv("SERVER_ENV")
-	if env == "dev" {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-	}
+    env := os.Getenv("SERVER_ENV")
+    if env == "dev" {
+        gin.SetMode(gin.DebugMode)
+    } else {
+        gin.SetMode(gin.ReleaseMode)
+    }
     r.Run(fmt.Sprintf("%v:%v", cfg.Server.Host, cfg.Server.Port))
 }
