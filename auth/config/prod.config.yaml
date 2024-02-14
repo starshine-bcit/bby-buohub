@@ -1,9 +1,9 @@
 server:
-  host: auth
-  port: 80
+  host: "0.0.0.0"
+  port: 9000
 database:
   user: auth
   host: db
   port: 6612
-  name: user
+  name: auth
   pass: ""

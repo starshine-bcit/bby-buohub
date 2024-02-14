@@ -7,20 +7,20 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-    gin.DisableConsoleColor()
-    r := gin.Default()
+	gin.DisableConsoleColor()
+	r := gin.Default()
 
-    r.GET("/ping", func(c *gin.Context) {
-        c.String(http.StatusOK, "pong")
-    })
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 
-    r.POST("/login", HandleLogin)
+	r.POST("/login", HandleLogin)
 
-    r.POST("/create", HandleCreate)
+	r.POST("/create", HandleCreate)
 
-    r.POST("/auth", HandleAuth)
+	r.POST("/auth", HandleAuth)
 
-    r.POST("/refresh", HandleRefresh)
+	r.POST("/refresh", HandleRefresh)
 
-    return r
+	return r
 }
