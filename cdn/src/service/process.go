@@ -50,19 +50,24 @@ func ProcessIncoming(video *Video) {
 		case "Audio":
 			if !video.AudioCodec.Valid {
 				video.AudioCodec.String = el.CodecID
+				video.AudioCodec.Valid = true
 			}
 		case "Video":
 			if !video.VideoCodec.Valid {
 				video.VideoCodec.String = el.CodecID
+				video.VideoCodec.Valid = true
 			}
 			if !video.Height.Valid {
 				video.Width.Int32 = int32(el.Height)
+				video.Width.Valid = true
 			}
 			if !video.Width.Valid {
 				video.Height.Int32 = int32(el.Width)
+				video.Height.Valid = true
 			}
-			if !video.Height.Valid {
-				video.Width.Int32 = int32(el.GetDurationSeconds())
+			if !video.RunTime.Valid {
+				video.RunTime.Int32 = int32(el.GetDurationSeconds())
+				video.RunTime.Valid = true
 			}
 		}
 	}
