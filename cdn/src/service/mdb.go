@@ -20,6 +20,7 @@ type Video struct {
 	Title            string    `gorm:"index;not null"`
 	Description      string    `gorm:"not null"`
 	OriginalFilename sql.NullString
+	PosterFilename   sql.NullString
 	ManifestName     sql.NullString
 	AudioCodec       sql.NullString
 	VideoCodec       sql.NullString
