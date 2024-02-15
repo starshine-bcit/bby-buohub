@@ -66,10 +66,11 @@ func CreateUser(db *gorm.DB, username, password string) bool {
 		util.ErrorLogger.Printf("Error creating user in database. err: %v\n", err.Error())
 	}
 	user := &User{
-		Username: username,
-		Password: hash,
-		Salt:     salt,
-		Created:  time.Now(),
+		Username:  username,
+		Password:  hash,
+		Salt:      salt,
+		Created:   time.Now(),
+		LastLogin: time.Now(),
 	}
 	result := db.Create(user)
 	if result.Error != nil {
