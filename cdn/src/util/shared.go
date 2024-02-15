@@ -12,7 +12,7 @@ var StagingDir, ReadyDir string
 
 func init() {
 	ex, _ := os.Executable()
-	uploadDir := filepath.Join(filepath.Dir(filepath.Dir(ex)), "upload")
+	uploadDir := filepath.Join(filepath.Dir(filepath.Dir(ex)), "uploads")
 	StagingDir = filepath.Join(uploadDir, "staging")
 	ReadyDir = filepath.Join(uploadDir, "ready")
 	_ = os.MkdirAll(StagingDir, 0770)

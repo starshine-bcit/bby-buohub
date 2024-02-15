@@ -64,3 +64,10 @@ func GetByUUID(db *gorm.DB, id uuid.UUID) (*Video, error) {
 	}
 	return video, nil
 }
+
+func UpdateVideo(db *gorm.DB, v *Video) {
+	tx := db.Save(v)
+	if tx.Error != nil {
+		util.ErrorLogger.Printf("Could not save updated video row in table. err: %v\n", tx.Error.Error())
+	}
+}

@@ -4,9 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/starshine-bcit/bby-buohub/cdn/util"
 )
 
-func SetupRouter() {
+func SetupRouter() *gin.Engine {
 	gin.DisableConsoleColor()
 	r := gin.Default()
 
@@ -16,5 +17,7 @@ func SetupRouter() {
 
 	r.POST("/upload", HandleUpload)
 
-	r.GET("/stream", HandleStream)
+	r.Static("/stream", util.ReadyDir)
+
+	return r
 }
