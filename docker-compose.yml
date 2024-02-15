@@ -3,6 +3,12 @@ services:
     image: mariadb:latest
     hostname: db
     restart: always
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect"]
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     environment:
       MARIADB_USER: dbuser
       MARIADB_PASSWORD: $DB_PASSWORD
@@ -23,7 +29,9 @@ services:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
     ports:
       - "9000:9000"
 volumes:

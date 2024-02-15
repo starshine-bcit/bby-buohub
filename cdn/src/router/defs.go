@@ -1,7 +1,6 @@
 package router
 
 import (
-	"database/sql"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -42,7 +41,8 @@ func HandleUpload(c *gin.Context) {
 	tempDir := filepath.Join(util.StagingDir, id.String())
 	os.Mkdir(tempDir, 0770)
 	c.SaveUploadedFile(file, filepath.Join(tempDir, fname))
-	video.OriginalFilename = sql.NullString{String: fname, Valid: true}
+	video.OriginalFilename.String = fname
+	video.OriginalFilename.Valid = true
 	util.InfoLogger.Println("Incoming file upload successfull, ready for processing")
 	go service.ProcessIncoming(video)
 	msg := &util.GenericResponse{Message: "Upload successfull, queued for processing"}
