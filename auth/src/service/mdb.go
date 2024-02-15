@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -31,7 +32,7 @@ type User struct {
 	Password  string    `gorm:"not null"`
 	Salt      string    `gorm:"not null"`
 	Created   time.Time `gorm:"not null"`
-	LastLogin time.Time
+	LastLogin sql.NullTime
 }
 
 func Migrate(db *gorm.DB) {
@@ -52,7 +53,8 @@ func ValidatePassword(db *gorm.DB, username, password string) bool {
 	if !ok {
 		return false
 	}
-	user.LastLogin = time.Now()
+	user.LastLogin.Time = time.Now()
+	user.LastLogin.Valid = true
 	result := db.Save(user)
 	if result.Error != nil {
 		util.ErrorLogger.Printf("Error updating user in database. err: %v\n", result.Error.Error())

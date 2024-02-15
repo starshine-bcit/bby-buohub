@@ -12,6 +12,11 @@ services:
       - db_data:/var/lib/mysql
     expose:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   auth:
     image: auth
     build:
@@ -23,9 +28,41 @@ services:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
     ports:
       - "9000:9000"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:9000/ping"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+  cdn:
+    image: auth
+    build:
+      context: ./cdn
+      dockerfile: Dockerfile
+    hostname: auth
+    restart: always
+    environment:
+      SERVER_ENV: prod
+      DB_PASSWORD: $DB_PASSWORD
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - fs_data:/app/uploads
+    ports:
+      - "9001:9000"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:9000/ping"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 volumes:
   db_data:
   fs_data:
