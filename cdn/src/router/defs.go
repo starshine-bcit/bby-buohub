@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -43,12 +44,14 @@ func HandleUpload(c *gin.Context) {
 	c.SaveUploadedFile(file, filepath.Join(tempDir, fname))
 	video.OriginalFilename.String = fname
 	video.OriginalFilename.Valid = true
-	util.InfoLogger.Println("Incoming file upload successfull, ready for processing")
-	go service.ProcessIncoming(video)
-	msg := &util.GenericResponse{Message: "Upload successfull, queued for processing"}
+	util.InfoLogger.Println("Incoming file upload successful, ready for processing")
+	go service.ProcessIncoming(video, Db)
+	msg := &util.GenericResponse{Message: "Upload successful, queued for processing"}
 	c.JSON(http.StatusCreated, msg)
 }
 
-func HandleStream(c *gin.Context) {
-	//
+func checkFileExists(filePath string) bool {
+	_, error := os.Stat(filePath)
+	//return !os.IsNotExist(err)
+	return !errors.Is(error, os.ErrNotExist)
 }

@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/gin-gonic/gin"
 	"github.com/starshine-bcit/bby-buohub/cdn/router"
 	"github.com/starshine-bcit/bby-buohub/cdn/service"
 	"github.com/starshine-bcit/bby-buohub/cdn/util"
@@ -14,6 +18,14 @@ func main() {
 		util.ErrorLogger.Fatalf("Could not connect to database %v\n", err)
 	}
 	service.Migrate(db)
-	util.InfoLogger.Println("Successfully made database connection and migrated")
 	router.Db = db
+	util.InfoLogger.Println("Successfully made database connection and migrated")
+	r := router.SetupRouter()
+	env := os.Getenv("SERVER_ENV")
+	if env == "dev" {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	r.Run(fmt.Sprintf("%v:%v", cfg.Server.Host, cfg.Server.Port))
 }
