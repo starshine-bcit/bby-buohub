@@ -16,6 +16,9 @@ WORKDIR /app
 
 RUN addgroup --system nonroot && adduser --system nonroot --ingroup nonroot
 
+RUN apk update
+RUN apk add curl
+
 COPY --from=build-stage --chown=nonroot:nonroot --chmod=550 /auth bin/auth
 COPY --chown=nonroot:nonroot --chmod=440 config/prod.config.yaml config/prod.config.yaml
 COPY --chown=nonroot:nonroot --chmod=440 keys ./keys/
