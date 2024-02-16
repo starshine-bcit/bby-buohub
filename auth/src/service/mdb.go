@@ -1,10 +1,7 @@
 package service
 
 import (
-<<<<<<< HEAD
 	"database/sql"
-=======
->>>>>>> parent of c601328 (Delete auth directory)
 	"fmt"
 	"time"
 

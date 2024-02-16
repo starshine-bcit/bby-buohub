@@ -4,6 +4,6 @@ server:
 database:
   user: auth
   host: localhost
-  port: 6612
+  port: 3306
   name: auth
   pass: ""

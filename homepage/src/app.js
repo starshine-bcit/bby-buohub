@@ -5,8 +5,9 @@ const http = require('http');
 const app = express();
 var favicon = require('serve-favicon')
 const path = require('path');
-
+var cookieParser = require('cookie-parser')
 //const bcrypt = require("bcryptjs")
+const axios = require('axios');
 
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
 
@@ -40,7 +41,30 @@ db.connect((err) => {
 
 app.set('view engine', 'hbs')
 
+app.get('/video', (req, res) => {
+  const query = `
+    SELECT username
+    FROM users
+    ORDER BY last_login DESC
+    LIMIT 1
+  `;
 
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).send('No users found');
+      return;
+    }
+
+    const latestUser = results[0].username;
+    res.render('video', { latestUser: latestUser }); 
+  });
+});
 
 
 // Define the directory for serving static files
@@ -59,6 +83,10 @@ app.get("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
     res.render("login")
+})
+
+app.get("/video", (req, res) => {
+  res.render("video")
 })
 
 app.use(express.urlencoded({ extended: false }));
@@ -134,6 +162,7 @@ app.post('/auth/register', (req, res) => {
     response.on('end', () => {
       console.log('Response from server:', responseData);
       res.send(responseData);
+      res.redirect("/login");
     });
   });
 
@@ -143,56 +172,52 @@ app.post('/auth/register', (req, res) => {
     res.status(500).send('Error sending request');
   });
 
+  //console.log('Cookies: ', req.cookies)
   // Write the data to the request body and end the request
   request.write(JSON.stringify(dataToSend));
   request.end();
-  res.redirect('/login');
+  // res.redirect('/login');
 });
+
 
 app.post('/auth/login', (req, res) => {
-
-  // Retrieve the JSON object from the request body
   const dataToSend = req.body;
-
-  // Configure the request details
-  const options = {
-    hostname: '127.0.0.1',
-    port: 9000,
-    path: '/login',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+  const loginOptions = {
+      hostname: '127.0.0.1',
+      port: 9000,
+      path: '/login',
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      }
   };
 
-  // Create the request
-  const request = http.request(options, (response) => {
-    let responseData = '';
-
-    // Concatenate chunks of data
-    response.on('data', (chunk) => {
-      responseData += chunk;
-    });
-
-    // Once the response is complete, handle it
-    response.on('end', () => {
-      console.log('Response from server:', responseData);
-      res.send(responseData);
-    });
+  const loginRequest = http.request(loginOptions, (loginResponse) => {
+      let responseData = '';
+      loginResponse.on('data', (chunk) => {
+          responseData += chunk;
+      });
+      loginResponse.on('end', () => {
+          console.log('Response from /auth/login:', responseData);
+          sendToAuth(responseData);
+          res.redirect('/video');
+      });
   });
 
-  // Handle errors
-  request.on('error', (error) => {
-    console.error('Error sending request:', error);
-    res.status(500).send('Error sending request');
-  });
-
-  // Write the data to the request body and end the request
-  request.write(JSON.stringify(dataToSend));
-  request.end();
-  res.redirect('/');
+  // Write the data to the request body for /auth/login and end the request
+  loginRequest.write(JSON.stringify(dataToSend));
+  loginRequest.end();
 });
-    
+
+function sendToAuth(data) {
+  axios.post('http://127.0.0.1:9000/auth', data)
+      .then(response => {
+          console.log('Data sent to auth endpoint successfully.');
+      })
+      .catch(error => {
+          console.error('Error sending data to auth endpoint:', error);
+      });
+}
 
 app.listen(5000, ()=> {
     console.log("Server started on port 5000")
