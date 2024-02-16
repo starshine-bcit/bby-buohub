@@ -33,6 +33,6 @@
 	</form>
 
 	<div class="actions">
-		<a href="/signup">Sign Up</a>
+		<a href="/register">Register</a>
 	</div>
 </section>

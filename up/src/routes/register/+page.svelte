@@ -3,13 +3,13 @@
 	export let form;
 </script>
 
-<h1>Login</h1>
+<h1>Register</h1>
 
 <section>
 	<form method="post" use:enhance>
 		<div class="group">
-			<label for="email">Email</label>
-			<input type="email" name="email" id="email" required />
+			<label for="username">Username</label>
+			<input type="username" name="username" id="username" required />
 		</div>
 
 		<div class="group">
@@ -28,6 +28,6 @@
 	</form>
 
 	<div class="actions">
-		<a href="/signup">Sign Up</a>
+		<a href="/login">Login</a>
 	</div>
 </section>
