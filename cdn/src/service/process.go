@@ -40,7 +40,7 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 	numProccessing += 1
 	statsStd := new(bytes.Buffer)
 	statsErr := new(bytes.Buffer)
-	statsCmd := exec.Command(gpacExec, "inspect", videoPath)
+	statsCmd := exec.Command(gpacExec, "-i", videoPath, "inspect:xml")
 	statsCmd.Dir = workingDir
 	statsCmd.Stdout = statsStd
 	statsCmd.Stderr = statsErr
@@ -57,13 +57,14 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 	}
 	util.InfoLogger.Println("Successfully retrieved stats, now parsing.")
 	for _, el := range stats.PIDConfigures {
+		util.InfoLogger.Println(el)
 		switch el.StreamType {
 		case "Audio":
 			if !video.AudioCodec.Valid {
 				video.AudioCodec.String = el.CodecID
 				video.AudioCodec.Valid = true
 			}
-		case "Video":
+		case "Visual":
 			if !video.VideoCodec.Valid {
 				video.VideoCodec.String = el.CodecID
 				video.VideoCodec.Valid = true
@@ -84,7 +85,7 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 	}
 	procStd := new(bytes.Buffer)
 	procErr := new(bytes.Buffer)
-	procCmd := exec.Command(gpacExec, "-i videoPath", "-o resultMpdPath")
+	procCmd := exec.Command(gpacExec, "-i", videoPath, "-o", resultMpdPath)
 	procCmd.Dir = resultDir
 	procCmd.Stdout = procStd
 	procCmd.Stderr = procErr
