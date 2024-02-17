@@ -1,0 +1,23 @@
+package router
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/starshine-bcit/bby-buohub/cdn/util"
+)
+
+func SetupRouter() *gin.Engine {
+	gin.DisableConsoleColor()
+	r := gin.Default()
+
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
+
+	r.POST("/upload", HandleUpload)
+
+	r.Static("/stream", util.ReadyDir)
+
+	return r
+}
