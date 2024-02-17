@@ -31,7 +31,6 @@ export const insertNewVideo = async (
 			'INSERT into videos (uuid, uploaded_by, process_complete, uploaded_at, title, description) value (?, ?, ?, ?, ?, ?)';
 		const vals = [uid, defaultUser, false, now, videoName, videoDescription];
 		const res = await conn.query(query, vals);
-
 		if (!res || res['affectedRows'] !== 1) {
 			throw new Error('Could not insert into database');
 		}
@@ -41,6 +40,9 @@ export const insertNewVideo = async (
 		if (conn) {
 			conn.end();
 		}
+	}
+	if (conn) {
+		conn.end();
 	}
 	return { ok: true, uuid: uid };
 };

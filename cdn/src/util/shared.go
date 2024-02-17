@@ -10,13 +10,17 @@ import (
 
 var StagingDir, ReadyDir string
 
-func init() {
+func InitDirs() {
 	ex, _ := os.Executable()
 	uploadDir := filepath.Join(filepath.Dir(filepath.Dir(ex)), "uploads")
 	StagingDir = filepath.Join(uploadDir, "staging")
 	ReadyDir = filepath.Join(uploadDir, "ready")
-	_ = os.MkdirAll(StagingDir, 0770)
-	_ = os.MkdirAll(ReadyDir, 0770)
+	if err := os.MkdirAll(StagingDir, 0770); err != nil {
+		ErrorLogger.Fatalf("Could not make staging dir: err %v\n", err.Error())
+	}
+	if err := os.MkdirAll(ReadyDir, 0770); err != nil {
+		ErrorLogger.Fatalf("Could not make ready dir: err %v\n", err.Error())
+	}
 }
 
 type ErrorResponse struct {

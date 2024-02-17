@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/ryanfowler/uuid"
 	"github.com/starshine-bcit/bby-buohub/cdn/util"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,7 +13,7 @@ import (
 
 type Video struct {
 	ID               uint      `gorm:"primaryKey"`
-	UUID             uuid.UUID `gorm:"type:uuid;not null;index"`
+	UUID             uuid.UUID `gorm:"type:uuid;unique;not null;index"`
 	UploadedBy       string    `gorm:"index;not null"`
 	ProcessComplete  bool      `gorm:"not null;default:false;index"`
 	UploadedAt       time.Time `gorm:"not null;index"`
@@ -55,9 +55,9 @@ func Migrate(db *gorm.DB) {
 	}
 }
 
-func GetByUUID(db *gorm.DB, id uuid.UUID) (*Video, error) {
+func GetByUUID(db *gorm.DB, uuid uuid.UUID) (*Video, error) {
 	video := &Video{}
-	tx := db.Where("username = ?", id).First(video)
+	tx := db.Where("uuid = ?", uuid).First(video)
 	if tx.Error != nil {
 		util.InfoLogger.Printf("Could not retrieve video from db. Err: %v\n", tx.Error.Error())
 		return nil, tx.Error

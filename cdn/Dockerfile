@@ -16,6 +16,11 @@ WORKDIR /app
 
 RUN addgroup --system nonroot && adduser --system nonroot --ingroup nonroot
 
+
+RUN mkdir /app/uploads
+RUN chown nonroot:nonroot /app/uploads
+VOLUME /app/uploads
+
 RUN apk update
 RUN apk add curl
 
