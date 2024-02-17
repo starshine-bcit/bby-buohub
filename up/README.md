@@ -1,38 +1,45 @@
-# create-svelte
+# bby-buohub-auth
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This service supplies a front-end with the capability to login, register and upload videos. It depends on cdn, auth, and the database being up.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Create account via web browser
+- Login to account via web browser
+- Upload video files
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Technical Details
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+The up service is a SvelteKit app using the NodeJS adapator, which allows it to be easily packaged with docker.
 
-## Developing
+It interacts with auth to set cookies in the browser containing the user's access and refresh JWT. Any requests made except to /login and /register require a user to be logged in.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+When a video is uploaded, it creates an entry in the database, then forwards that video to cdn's /upload endpoint, where it is meant to automatically processed.
 
-```bash
-npm run dev
+## Building & Running
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+You will need to create two files, `.env.development` and `.env.production` in the following format. Be sure to use suitable values for your environment. These files should be stored in the project root (`./up`).
 
 ```bash
-npm run build
+HOST=
+PORT=
+DB_PASSWORD=
+DB_PORT=
+DB_USER=
+DB_HOST=
+DB_NAME=
+AUTH_HOST=
+AUTH_PORT=
+CDN_HOST=
+CDN_PORT=
+HOME_HOST=
+HOST_PORT=
 ```
 
-You can preview the production build with `npm run preview`.
+You can get setup by running `npm install`. Then, the dev version can be run with `npm run dev`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+To build, you can run `npm run build` and then `npm -r dotenv/config build` to run it.
+
+## Docker
+
+The included DockerFile utilizes a multi-stage build process in order to generate a lean container. Note that passwords are embedded in the container, but this is probably fine since bby-buohub isn't meant to be actually used.
