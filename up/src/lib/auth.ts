@@ -1,4 +1,4 @@
-import { AUTH_HOST, AUTH_PORT } from '$env/static/private';
+import { AUTH_HOST, AUTH_PORT, CDN_HOST, CDN_PORT } from '$env/static/private';
 
 interface loginResponse {
 	valid: boolean;
@@ -102,4 +102,20 @@ export const postRegister = async (username: string, password: string): Promise<
 		}
 	}
 	return { valid: false };
+};
+
+export const postUpload = async (file: File, uid: string): Promise<boolean> => {
+	const form = new FormData();
+	form.append('file', file);
+	form.append('uuid', uid);
+	const req = new Request(`http://${CDN_HOST}:${CDN_PORT}/upload`, {
+		method: 'POST',
+		body: form
+	});
+	const res = await fetch(req);
+	if (res.ok === true) {
+		return true;
+	}
+	console.log(res.status);
+	return false;
 };

@@ -7,32 +7,33 @@
 	<title>Login</title>
 </svelte:head>
 
-<h1>Login</h1>
-
 <section>
-	<form method="post" use:enhance>
-		<div class="group">
-			<label for="username">Username</label>
-			<input type="username" name="username" id="username" required />
-		</div>
+	<div class="container mt-4">
+		<div class="card mx-auto" style="width: 18rem;">
+			<div class="card-header bg-dark text-warning">Login to bby-buohub</div>
+			<div class="card-body">
+				<form method="post" use:enhance>
+					<div class="group mb-3">
+						<label for="username" class="form-label">Username</label>
+						<input type="username" name="username" id="username" class="form-control" required />
+					</div>
 
-		<div class="group">
-			<label for="password">Password</label>
-			<input type="password" name="password" id="password" required />
-		</div>
+					<div class="group mb-3">
+						<label for="password" class="form-label">Password</label>
+						<input type="password" name="password" id="password" class="form-control" required />
+					</div>
 
-		<div class="submit-container">
-			<button type="submit">Login</button>
-		</div>
+					<div class="submit-container">
+						<button type="submit" class="btn btn-primary">Login</button>
+					</div>
 
-		{#if form?.err}
-			<div class="notice error">
-				{form.err}
+					{#if form?.err}
+						<div class="notice error">
+							{form.err}
+						</div>
+					{/if}
+				</form>
 			</div>
-		{/if}
-	</form>
-
-	<div class="actions">
-		<a href="/register">Register</a>
+		</div>
 	</div>
 </section>
