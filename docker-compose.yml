@@ -40,11 +40,11 @@ services:
       retries: 3
       start_period: 5s
   cdn:
-    image: auth
+    image: cdn
     build:
       context: ./cdn
       dockerfile: Dockerfile
-    hostname: auth
+    hostname: cdn
     restart: always
     environment:
       SERVER_ENV: prod
@@ -56,9 +56,9 @@ services:
     volumes:
       - fs_data:/app/uploads
     ports:
-      - "9001:9000"
+      - "9001:9001"
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://127.0.0.1:9000/ping"]
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:9001/ping"]
       interval: 1m
       timeout: 5s
       retries: 3
