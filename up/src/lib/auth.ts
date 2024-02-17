@@ -85,6 +85,7 @@ export const postLogin = async (username: string, password: string): Promise<log
 };
 
 export const postRegister = async (username: string, password: string): Promise<loginResponse> => {
+	console.log(AUTH_HOST, AUTH_PORT);
 	const req = new Request(`http://${AUTH_HOST}:${AUTH_PORT}/create`, {
 		method: 'POST',
 		body: `{"username": "${username}", "refreshToken": "${password}"}`,
@@ -104,10 +105,10 @@ export const postRegister = async (username: string, password: string): Promise<
 	return { valid: false };
 };
 
-export const postUpload = async (file: File, uid: string): Promise<boolean> => {
+export const postUpload = async (file: File, uuid: string): Promise<boolean> => {
 	const form = new FormData();
 	form.append('file', file);
-	form.append('uuid', uid);
+	form.append('uuid', uuid);
 	const req = new Request(`http://${CDN_HOST}:${CDN_PORT}/upload`, {
 		method: 'POST',
 		body: form

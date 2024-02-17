@@ -15,14 +15,9 @@ import (
 )
 
 var numProccessing uint
-var gpacExec string
 
 const maxProcessing uint = 5
-
-func init() {
-	ex, _ := os.Executable()
-	gpacExec = filepath.Join(filepath.Dir(ex))
-}
+const gpacExec = "gpac"
 
 func ProcessIncoming(video *Video, db *gorm.DB) {
 	idstr := video.UUID.String()
@@ -89,7 +84,7 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 	}
 	procStd := new(bytes.Buffer)
 	procErr := new(bytes.Buffer)
-	procCmd := exec.Command(gpacExec, "-i", videoPath, "-o", resultMpdPath)
+	procCmd := exec.Command(gpacExec, "-i videoPath", "-o resultMpdPath")
 	procCmd.Dir = resultDir
 	procCmd.Stdout = procStd
 	procCmd.Stderr = procErr

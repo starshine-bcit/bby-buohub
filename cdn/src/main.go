@@ -20,6 +20,8 @@ func main() {
 	service.Migrate(db)
 	router.Db = db
 	util.InfoLogger.Println("Successfully made database connection and migrated")
+	util.InitDirs()
+	util.InfoLogger.Println("Successfully initialized storage dirs")
 	r := router.SetupRouter()
 	env := os.Getenv("SERVER_ENV")
 	if env == "dev" {

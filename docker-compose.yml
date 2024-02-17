@@ -24,9 +24,11 @@ services:
       dockerfile: Dockerfile
     hostname: auth
     restart: always
+    user: nonroot:nonroot
     environment:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
+      GIN_MODE: release
     depends_on:
       db:
         condition: service_healthy
@@ -46,9 +48,11 @@ services:
       dockerfile: Dockerfile
     hostname: cdn
     restart: always
+    user: nonroot:nonroot
     environment:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
+      GIN_MODE: release
     depends_on:
       db:
         condition: service_healthy
@@ -59,6 +63,32 @@ services:
       - "9001:9001"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://127.0.0.1:9001/ping"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+  up:
+    image: up
+    build:
+      context: ./up
+      dockerfile: Dockerfile
+    hostname: up
+    restart: always
+    user: nonroot:nonroot
+    environment:
+      HOST: "0.0.0.0"
+      PORT: 6001
+      NODE_ENV: production
+      ORIGIN: "http://localhost:6001"
+      BODY_SIZE_LIMIT: 5368709120
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    ports:
+      - "6001:6001"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:6001/login"]
       interval: 1m
       timeout: 5s
       retries: 3
