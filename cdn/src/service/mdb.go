@@ -28,7 +28,6 @@ type Video struct {
 	Width            sql.NullInt32
 	RunTime          sql.NullInt32
 	ProcessedAt      sql.NullTime
-	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
 

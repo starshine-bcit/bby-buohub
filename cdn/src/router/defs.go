@@ -20,7 +20,7 @@ func HandleUpload(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		util.WarningLogger.Printf("Could not get file from multipart-formdata. err: %v\n", err.Error())
-		c.JSON(http.StatusInternalServerError, &util.ErrorResponse{
+		c.JSON(http.StatusBadRequest, &util.ErrorResponse{
 			ErrorName: "ParsingFormError",
 			ErrorText: "Could not get file from multipart/form-data",
 		})
@@ -29,7 +29,7 @@ func HandleUpload(c *gin.Context) {
 	uuidstr, exist := c.GetPostForm("uuid")
 	if !exist || uuidstr == "" {
 		util.WarningLogger.Println("Could not parse uuid field from multipart=formdata")
-		c.JSON(http.StatusInternalServerError, &util.ErrorResponse{
+		c.JSON(http.StatusBadRequest, &util.ErrorResponse{
 			ErrorName: "ParsingFormError",
 			ErrorText: "Could not get uuid from multipart/form-data",
 		})
@@ -38,7 +38,7 @@ func HandleUpload(c *gin.Context) {
 	uuid, err := uuid.ParseString(uuidstr)
 	if err != nil {
 		util.WarningLogger.Println("Could not parse uuid from string")
-		c.JSON(http.StatusInternalServerError, &util.ErrorResponse{
+		c.JSON(http.StatusBadRequest, &util.ErrorResponse{
 			ErrorName: "ParsingFormError",
 			ErrorText: "Could not convert incoming uuid to uuid type",
 		})

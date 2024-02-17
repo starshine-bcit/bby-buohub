@@ -19,9 +19,9 @@ RUN addgroup --system nonroot && adduser --system nonroot --ingroup nonroot
 
 RUN apt update && apt upgrade -y
 RUN apt install -y curl wget ffmpeg liba52-0.7.4 libfaad2 libglu1-mesa libjpeg62 libmad0
-RUN wget https://download.tsi.telecom-paristech.fr/gpac/new_builds/linux64/gpac/gpac_2.3-DEV-latest-master_amd64.deb
-RUN dpkg -i gpac_2.3-DEV-latest-master_amd64.deb
-RUN rm gpac_2.3-DEV-latest-master_amd64.deb
+RUN wget https://download.tsi.telecom-paristech.fr/gpac/new_builds/gpac_latest_head_linux64.deb
+RUN dpkg -i gpac_latest_head_linux64.deb
+RUN rm gpac_latest_head_linux64.deb
 
 COPY --from=build-stage --chown=nonroot:nonroot --chmod=550 /cdn bin/cdn
 COPY --chown=nonroot:nonroot --chmod=440 config/prod.config.yaml config/prod.config.yaml
