@@ -94,7 +94,7 @@ services:
       retries: 3
       start_period: 5s
   home:
-    image: home123
+    image: home
     build:
       context: ./homepage
       dockerfile: Dockerfile
@@ -107,7 +107,9 @@ services:
       DATABASE: bby
       PORT: 3306
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
     ports:
       - "8999:8999"
     healthcheck:

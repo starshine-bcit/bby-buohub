@@ -16,27 +16,28 @@ app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
 dotenv.config({ path: '.env' });
 
 const db = mysql.createConnection({
-    host: 'db',
+    host: "db",
     user: 'dbuser',
     password: '123test',
-    database: 'bby'
+    database: 'bby',
+    port: 3306
 });
 
-// const db = mysql.createConnection({
- //   host: process.env.HOST,
- //   user: process.env.USER,
- //   password: process.env.PASSWORD,
- //   database: process.env.DATABASE
+//const db = mysql.createConnection({
+//    host: process.env.HOST,
+//    user: process.env.USER,
+//    password: process.env.PASSWORD,
+//    database: process.env.DATABASE
 //}); 
 
 
 // Connect to MySQL database
 db.connect((err) => {
     if (err) {
-        console.error('Error connecting to database:', err);
+        console.error('Error connecting to MariaDB:', err);
         return;
     }
-    console.log('Connected to the database');
+    console.log('Connected to the MariaDB');
 });
  
 
@@ -144,7 +145,7 @@ app.post('/auth/register', (req, res) => {
 
   // Configure the request details
   const options = {
-    hostname: '0.0.0.0',
+    hostname: 'auth',
     port: 9000,
     path: '/create',
     method: 'POST',
@@ -187,7 +188,7 @@ app.post('/auth/register', (req, res) => {
 app.post('/auth/login', (req, res) => {
   const dataToSend = req.body;
   const loginOptions = {
-      hostname: '0.0.0.0',
+      hostname: 'auth',
       port: 9000,
       path: '/login',
       method: 'POST',
@@ -214,7 +215,7 @@ app.post('/auth/login', (req, res) => {
 });
 
 function sendToAuth(data) {
-  axios.post('http://0.0.0.0:9000/auth', data)
+  axios.post('http://auth:9000/auth', data)
       .then(response => {
           console.log('Data sent to auth endpoint successfully.');
       })
