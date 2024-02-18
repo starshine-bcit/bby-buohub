@@ -10,6 +10,22 @@ Sasha, Dennis, Jose
 
 ### Docker-Compose
 
+In order to run the project via docker-compose, some manual setup is required after cloning this repo.
+
+1. Generate a new set of keys with genkey tool.
+2. Move the newly generated `authjwt` and `authjwt.pub` into `bby-buohub/auth/keys`
+3. Follow the directions in the [up readme](./up/README.md) to create a `bby-buohub/up/.env.production` file
+4. It may? be necessary to do `npm install` and `npm run dev` once in the up project to generate the typescript definitions
+5. Create a `.env` in the `bby-buohub` folder with the following template. These variables are used in the `docker-compose.yml` file
+
+```bash
+DB_PASSWORD=
+SERVER_ENV=
+DB_ROOT_PASSWORD=
+```
+
+Once those steps are complete you should be able to build and run the images!
+
 ### Auth
 
 [See the readme here](./auth/README.md)
