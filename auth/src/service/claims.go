@@ -71,14 +71,10 @@ func ValidateUserClaims(token *jwt.Token, claims *UserClaims, db *gorm.DB) error
 func ValidateAuthRequest(b *util.TokenBody, db *gorm.DB) (*util.TokenBody, error) {
 	accessToken, accessClaims, err := ParseAccessToken(b.AccessToken)
 	if err != nil {
-		return nil, err
-	}
-	refreshToken, refreshClaims, err := ParseRefreshToken(b.RefreshToken)
-	if err != nil {
-		return nil, err
-	}
-	err = ValidateUserClaims(accessToken, accessClaims, db)
-	if err != nil {
+		refreshToken, refreshClaims, err := ParseRefreshToken(b.RefreshToken)
+		if err != nil {
+			return nil, err
+		}
 		err = ValidateUserClaims(refreshToken, refreshClaims, db)
 		if err != nil {
 			return nil, err
@@ -91,6 +87,11 @@ func ValidateAuthRequest(b *util.TokenBody, db *gorm.DB) (*util.TokenBody, error
 				b.AccessToken = newToken
 				return b, nil
 			}
+		}
+	} else {
+		err = ValidateUserClaims(accessToken, accessClaims, db)
+		if err != nil {
+			return b, nil
 		}
 	}
 	return nil, nil
