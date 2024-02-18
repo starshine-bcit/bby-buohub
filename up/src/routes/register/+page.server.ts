@@ -23,7 +23,7 @@ export const actions = {
 				maxAge: 60 * 60 * 24,
 				path: '/'
 			});
-			cookies.set(RefreshCookieName, `Refresh ${loginRes.authToken}`, {
+			cookies.set(RefreshCookieName, `Refresh ${loginRes.refreshToken}`, {
 				httpOnly: true,
 				sameSite: 'lax',
 				secure: false,

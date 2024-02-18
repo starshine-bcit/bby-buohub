@@ -33,7 +33,7 @@ func GenUserAccessClaims(username string) *UserClaims {
 	claims := &UserClaims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate((time.Now().Add(15 * time.Minute))),
+			ExpiresAt: jwt.NewNumericDate((time.Now().Add(1 * time.Minute))),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},
@@ -71,19 +71,16 @@ func ValidateUserClaims(token *jwt.Token, claims *UserClaims, db *gorm.DB) error
 func ValidateAuthRequest(b *util.TokenBody, db *gorm.DB) (*util.TokenBody, error) {
 	accessToken, accessClaims, err := ParseAccessToken(b.AccessToken)
 	if err != nil {
-		return nil, err
-	}
-	refreshToken, refreshClaims, err := ParseRefreshToken(b.RefreshToken)
-	if err != nil {
-		return nil, err
-	}
-	err = ValidateUserClaims(accessToken, accessClaims, db)
-	if err != nil {
+		refreshToken, refreshClaims, err := ParseRefreshToken(b.RefreshToken)
+		if err != nil {
+			return nil, err
+		}
+		util.InfoLogger.Println("Successfully parsed refresh token")
 		err = ValidateUserClaims(refreshToken, refreshClaims, db)
 		if err != nil {
 			return nil, err
 		} else {
-			newClaims := GenUserAccessClaims(accessClaims.Username)
+			newClaims := GenUserAccessClaims(refreshClaims.Username)
 			newToken, err := NewAccessToken(newClaims)
 			if err != nil {
 				return nil, err
@@ -91,6 +88,11 @@ func ValidateAuthRequest(b *util.TokenBody, db *gorm.DB) (*util.TokenBody, error
 				b.AccessToken = newToken
 				return b, nil
 			}
+		}
+	} else {
+		err = ValidateUserClaims(accessToken, accessClaims, db)
+		if err != nil {
+			return b, nil
 		}
 	}
 	return nil, nil
