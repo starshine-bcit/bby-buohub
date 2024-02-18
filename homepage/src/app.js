@@ -167,7 +167,6 @@ app.post('/auth/register', (req, res) => {
     response.on('end', () => {
       console.log('Response from server:', responseData);
       res.send(responseData);
-      res.redirect("/login");
     });
   });
 
@@ -176,12 +175,11 @@ app.post('/auth/register', (req, res) => {
     console.error('Error sending request:', error);
     res.status(500).send('Error sending request');
   });
-
+  //res.redirect('/login');
   //console.log('Cookies: ', req.cookies)
   // Write the data to the request body and end the request
   request.write(JSON.stringify(dataToSend));
   request.end();
-  // res.redirect('/login');
 });
 
 
