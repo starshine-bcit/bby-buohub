@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:latest
 
 WORKDIR /usr/src/app
 
@@ -6,10 +6,12 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY src ./
+COPY src ./src/
 
-COPY views ./
+COPY views ./views/
 
 EXPOSE 8999
 
-CMD [ "node", "start"]
+#USER nonroot:nonroot
+
+CMD [ "node", "./src/app.js"]

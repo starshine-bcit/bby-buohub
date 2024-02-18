@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     hostname: auth
     restart: always
-    user: nonroot:nonroot
+    user: nonroot
     environment:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
@@ -48,7 +48,7 @@ services:
       dockerfile: Dockerfile
     hostname: cdn
     restart: always
-    user: nonroot:nonroot
+    user: nonroot
     environment:
       SERVER_ENV: prod
       DB_PASSWORD: $DB_PASSWORD
@@ -74,7 +74,7 @@ services:
       dockerfile: Dockerfile
     hostname: up
     restart: always
-    user: nonroot:nonroot
+    user: nonroot
     environment:
       HOST: "0.0.0.0"
       PORT: 6001
@@ -89,6 +89,29 @@ services:
       - "6001:6001"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://127.0.0.1:6001/login"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+  home:
+    image: home123
+    build:
+      context: ./homepage
+      dockerfile: Dockerfile
+    hostname: home
+    restart: always
+    environment:
+      HOST: db
+      USER: dbuser
+      PASSWORD: $DB_PASSWORD
+      DATABASE: bby
+      PORT: 3306
+    depends_on:
+      - db
+    ports:
+      - "8999:8999"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8999/ping"]
       interval: 1m
       timeout: 5s
       retries: 3

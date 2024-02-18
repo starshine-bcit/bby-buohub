@@ -5,27 +5,28 @@ const http = require('http');
 const app = express();
 var favicon = require('serve-favicon')
 const path = require('path');
-var cookieParser = require('cookie-parser')
+//var cookieParser = require('cookie-parser')
 //const bcrypt = require("bcryptjs")
 const axios = require('axios');
 
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
 
+//app.use('/video', express.static(path.join(__dirname, './public')));
 
-dotenv.config({ path: './.env' });
+dotenv.config({ path: '.env' });
 
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'auth',
+    host: 'db',
+    user: 'dbuser',
     password: '123test',
-    database: 'auth'
+    database: 'bby'
 });
 
 // const db = mysql.createConnection({
-//    host: process.env.HOST,
-//    user: process.env.USER,
-//    password: process.env.PASSWORD,
-//    database: process.env.DATABASE
+ //   host: process.env.HOST,
+ //   user: process.env.USER,
+ //   password: process.env.PASSWORD,
+ //   database: process.env.DATABASE
 //}); 
 
 
@@ -65,6 +66,9 @@ app.get('/video', (req, res) => {
     res.render('video', { latestUser: latestUser }); 
   });
 });
+
+// Video player
+
 
 
 // Define the directory for serving static files
@@ -140,7 +144,7 @@ app.post('/auth/register', (req, res) => {
 
   // Configure the request details
   const options = {
-    hostname: '127.0.0.1',
+    hostname: '0.0.0.0',
     port: 9000,
     path: '/create',
     method: 'POST',
@@ -183,7 +187,7 @@ app.post('/auth/register', (req, res) => {
 app.post('/auth/login', (req, res) => {
   const dataToSend = req.body;
   const loginOptions = {
-      hostname: '127.0.0.1',
+      hostname: '0.0.0.0',
       port: 9000,
       path: '/login',
       method: 'POST',
@@ -210,7 +214,7 @@ app.post('/auth/login', (req, res) => {
 });
 
 function sendToAuth(data) {
-  axios.post('http://127.0.0.1:9000/auth', data)
+  axios.post('http://0.0.0.0:9000/auth', data)
       .then(response => {
           console.log('Data sent to auth endpoint successfully.');
       })
@@ -219,6 +223,6 @@ function sendToAuth(data) {
       });
 }
 
-app.listen(5000, ()=> {
-    console.log("Server started on port 5000")
+app.listen(8999, ()=> {
+    console.log("Server started on port 8999")
 })
