@@ -64,19 +64,27 @@ db.connect((err) => {
 
 app.set('view engine', 'hbs')
 
-function showVideo(data) {
-  return new Promise((resolve, reject) => {
-      axios.get(`http://cdn:9001/stream/${videoData.uuid}/${videoData.manifest_name}`)
-          .then(response => {
-              console.log('Data sent to auth endpoint successfully.');
-              resolve(response.data.video_url); // Assuming the response contains the video URL
-          })
-          .catch(error => {
-              console.error('Error sending data to auth endpoint:', error);
-              reject(error);
-          });
-  });
-}
+// Route for Image Click
+app.get('/play/:uuid/:manifest_name', (req, res) => {
+  const uuid = req.params.uuid;
+  const manifestName = req.params.manifest_name;
+  
+  // Redirect to the video player page with UUID and manifest name as parameters
+  res.redirect(`/player/${uuid}/${manifestName}`);
+});
+
+// Route for Video Player Page
+app.get('/player/:uuid/:manifest_name', (req, res) => {
+  const uuid = req.params.uuid;
+  const manifestName = req.params.manifest_name;
+
+  const videoUrl = { url: `http://localhost:9001/stream/${uuid}/${manifestName}` }
+ 
+  console.log(videoUrl.url)
+
+  res.render('player', { videoUrl: videoUrl.url });
+});
+
 
 app.get('/video', (req, res) => {
   const cdn = process.env.CDN_HOST
@@ -121,7 +129,9 @@ app.get('/video', (req, res) => {
         url: `http://localhost:9001/stream/${image.uuid}/${image.poster_filename}`,
         title: image.title,
         description: image.description,
-        videoUrl: `http://localhost:9001/stream/${image.uuid}/${image.manifest_name}`
+        videoUrl: `http://localhost:9001/stream/${image.uuid}/${image.manifest_name}`,
+        uuid: image.uuid,
+        manifest_name: image.manifest_name
     }));
     
 

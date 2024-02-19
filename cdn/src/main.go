@@ -14,6 +14,7 @@ func main() {
 	cfg := util.Load_config()
 	util.InfoLogger.Println("Successfully parsed config and env")
 	db, err := service.ConnectToMariaDB(cfg)
+	util.Cfg = cfg
 	if err != nil {
 		util.ErrorLogger.Fatalf("Could not connect to database %v\n", err)
 	}

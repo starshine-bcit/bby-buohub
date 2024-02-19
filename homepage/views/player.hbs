@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>    
+<head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.16.0/video-js.css" rel="stylesheet">
+
     <style>
         /* Adjusting colors to match the desired scheme */
         body {
@@ -32,26 +35,6 @@
         .bg-primary.text-white {
             color: #fff !important; /* White text color for primary content */
         }
-
-        /* Flexbox grid styles */
-        .image-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .image-container {
-            width: calc(33.33% - 10px);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -60,9 +43,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">
-            <img src="/logo.png" alt="Logo" width="auto" height="auto">
+          <img src="/logo.png" alt="Logo" width="auto" height="auto"></img>
         </a>
-        <a>Current logged in as: {{ latestUser }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -81,20 +63,31 @@
         </div>
     </div>
 </nav>
-
+<!-- Body -->
 <div class="container mt-4">
-    <div>
-        <div class="image-grid">
-            {{#each urlArray}}
-            <div class="image-container">
-            <a href="/play/{{this.uuid}}/{{this.manifest_name}}"><img src="{{this.url}}" alt="{{this.url}}"></a>
-            <h5> Title: {{this.title}} </h5>
-            <h6> Description: {{this.description}} </h6>
-            </div>
-        {{/each}}
-        </div>  
+    <div class="mt-4 p-5 bg-primary text-white rounded">
+        <h1>Hello there!</h1>
+        <p>BbyBuoHub is a dockerized video streaming platform</p>
+        <!-- Video Player -->
+        <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "fluid": true }'>
+            <source src="{{videoUrl}}" type="application/dash+xml">
+            Your browser does not support the video tag or the file format of this video. Please use a modern browser that supports HTML5 video.
+        </video>
     </div>
 </div>
+
+<script src="https://vjs.zencdn.net/7.16.0/video.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.12.2/videojs-dash.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var player = videojs('my-video', {
+            fluid: true, 
+            controls: true 
+        });
+    });
+</script>
 
 </body>
 </html>
