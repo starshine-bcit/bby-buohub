@@ -56,6 +56,7 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 		return
 	}
 	util.InfoLogger.Println("Successfully retrieved stats, now parsing.")
+	// var videoPID, audioPID uint
 	for _, el := range stats.PIDConfigures {
 		util.InfoLogger.Println(el)
 		switch el.StreamType {
@@ -63,37 +64,52 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 			if !video.AudioCodec.Valid {
 				video.AudioCodec.String = el.CodecID
 				video.AudioCodec.Valid = true
+				// audioPID = el.PID
 			}
 		case "Visual":
-			if !video.VideoCodec.Valid {
-				video.VideoCodec.String = el.CodecID
-				video.VideoCodec.Valid = true
-			}
-			if !video.Height.Valid {
-				video.Width.Int32 = int32(el.Height)
-				video.Width.Valid = true
-			}
-			if !video.Width.Valid {
-				video.Height.Int32 = int32(el.Width)
-				video.Height.Valid = true
-			}
-			if !video.RunTime.Valid {
-				video.RunTime.Int32 = int32(el.GetDurationSeconds())
-				video.RunTime.Valid = true
-			}
+			video.VideoCodec.String = el.CodecID
+			video.VideoCodec.Valid = true
+			video.Width.Int32 = int32(el.Width)
+			video.Width.Valid = true
+			video.Height.Int32 = int32(el.Height)
+			video.Height.Valid = true
+			video.RunTime.Int32 = int32(el.GetDurationSeconds())
+			video.RunTime.Valid = true
+			// videoPID = el.PID
 		}
 	}
 	procStd := new(bytes.Buffer)
 	procErr := new(bytes.Buffer)
-	procCmd := exec.Command(gpacExec, "-i", videoPath, "-o", resultMpdPath)
+	base_url := fmt.Sprintf("%v/%v/", util.Cfg.Server.MPDBaseURL, video.UUID.String())
+	var encVideo string
+	if video.Height.Int32 > 1080 {
+		encVideo = "c=avc:b=6m"
+	} else if video.Height.Int32 > 576 {
+		encVideo = "c=avc:b=3m"
+	} else {
+		encVideo = "c=avc:b=1m"
+	}
+	util.InfoLogger.Println("Parsing successfull, beginning transcoding and mpd generation")
+	procCmd := exec.Command(
+		gpacExec,
+		"-i",
+		videoPath,
+		encVideo,
+		"resample:och=2",
+		"enc:c=aac:b=128k:ac=2",
+		fmt.Sprintf("dasher:segdur=4:base=%v", base_url),
+		"-o",
+		resultMpdPath,
+	)
 	procCmd.Dir = resultDir
 	procCmd.Stdout = procStd
 	procCmd.Stderr = procErr
 	if err := procCmd.Run(); err != nil {
-		util.WarningLogger.Printf("Error executing gpac command. err: %v\n", statsErr.String())
+		util.WarningLogger.Printf("Error executing gpac command. \nerr: %v\nstd: %v\n", statsErr.String(), statsStd.String())
 		numProccessing -= 1
 		return
 	}
+	util.InfoLogger.Println("Encoding successfull, taking screenshot")
 	ssCMD := exec.Command(
 		"ffmpeg", "-y", "-loglevel", "fatal",
 		"-hide_banner", "-ss", fmt.Sprintf("%v", video.RunTime.Int32/4),
@@ -108,6 +124,7 @@ func ProcessIncoming(video *Video, db *gorm.DB) {
 	if err := os.Remove(workingDir); err != nil {
 		util.WarningLogger.Printf("Could not remove the input video folder. err %v\n", err.Error())
 	}
+	util.InfoLogger.Println("Screenshot taking successfull, saving info to database")
 	video.PosterFilename.String = "thumb.png"
 	video.PosterFilename.Valid = true
 	video.ProcessComplete = true

@@ -11,8 +11,9 @@ import (
 
 type Config struct {
 	Server struct {
-		Host string `yaml:"host"`
-		Port int    `yaml:"port"`
+		Host       string `yaml:"host"`
+		Port       int    `yaml:"port"`
+		MPDBaseURL string `yaml:"mpd_base_url"`
 	} `yaml:"server"`
 	Database struct {
 		Username string `yaml:"user"`
@@ -22,6 +23,8 @@ type Config struct {
 		Password string `yaml:"pass" envconfig:"DB_PASSWORD"`
 	} `yaml:"database"`
 }
+
+var Cfg *Config
 
 func Load_config() *Config {
 	cfg := new(Config)
