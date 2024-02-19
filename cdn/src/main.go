@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,26 @@ import (
 )
 
 func main() {
+
+	http.HandleFunc("/player/", func(w http.ResponseWriter, r *http.Request) {
+		// Define allowed origins
+		allowedOrigins := "http://localhost:8999, http://127.0.0.1:8999"
+
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigins)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Serve your routes
+		http.DefaultServeMux.ServeHTTP(w, r)
+	})
+
 	cfg := util.Load_config()
 	util.InfoLogger.Println("Successfully parsed config and env")
 	db, err := service.ConnectToMariaDB(cfg)

@@ -69,23 +69,20 @@
         <h1>Hello there!</h1>
         <p>BbyBuoHub is a dockerized video streaming platform</p>
         <!-- Video Player -->
-        <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "fluid": true }'>
-            <source src="{{videoUrl}}" type="application/dash+xml">
+        <video id="my-video" class="video-js" controls width="640" height="360" data-setup='{ "fluid": true }'>
+            <source src="{{ videoUrl }}" type="application/dash+xml">
             Your browser does not support the video tag or the file format of this video. Please use a modern browser that supports HTML5 video.
         </video>
     </div>
 </div>
 
 <script src="https://vjs.zencdn.net/7.16.0/video.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-dash/2.12.2/videojs-dash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.0.1/dash.all.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var player = videojs('my-video', {
-            fluid: true, 
-            controls: true 
-        });
+        const player = dashjs.MediaPlayer().create();
+        player.initialize(document.querySelector('#my-video'), {{ videoUrl }}, true);
     });
 </script>
 
