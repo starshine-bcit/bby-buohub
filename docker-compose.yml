@@ -59,7 +59,7 @@ services:
         restart: true
     volumes:
       - fs_data:/app/uploads
-    expose:
+    ports:
       - "9001:9001"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://127.0.0.1:9001/ping"]
