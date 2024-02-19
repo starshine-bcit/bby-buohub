@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require("mysql");
-const dotenv = require('dotenv');
+const dotenv = require('dotenv')
 const http = require('http');
 const app = express();
 var favicon = require('serve-favicon')
@@ -8,12 +8,25 @@ const path = require('path');
 //var cookieParser = require('cookie-parser')
 //const bcrypt = require("bcryptjs")
 const axios = require('axios');
+dotenv.config();
+//const mariadb = require('mariaDB');
+
+
+
+
+//app.set('view engine', 'ejs');
+
+
+//const exphbs  = require('express-handlebars');
+
+//app.engine('.hbs', exphbs({ extname: '.hbs' }));
+//app.set('view engine', '.hbs');
 
 app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
 
 //app.use('/video', express.static(path.join(__dirname, './public')));
 
-dotenv.config({ path: '.env' });
+
 
 const db = mysql.createConnection({
     host: "db",
@@ -22,6 +35,14 @@ const db = mysql.createConnection({
     database: 'bby',
     port: 3306
 });
+
+//const pool = mariadb.createPool({
+//  host: "db",
+//  user: 'dbuser',
+//  password: '123test',
+//  database: 'bby',
+//  connectionLimit: 5
+//});
 
 //const db = mysql.createConnection({
 //    host: process.env.HOST,
@@ -43,13 +64,30 @@ db.connect((err) => {
 
 app.set('view engine', 'hbs')
 
+function showVideo(data) {
+  return new Promise((resolve, reject) => {
+      axios.get(`http://cdn:9001/stream/${videoData.uuid}/${videoData.manifest_name}`)
+          .then(response => {
+              console.log('Data sent to auth endpoint successfully.');
+              resolve(response.data.video_url); // Assuming the response contains the video URL
+          })
+          .catch(error => {
+              console.error('Error sending data to auth endpoint:', error);
+              reject(error);
+          });
+  });
+}
+
 app.get('/video', (req, res) => {
+  const cdn = process.env.CDN_HOST
+  
   const query = `
     SELECT username
     FROM users
     ORDER BY last_login DESC
     LIMIT 1
   `;
+
 
   db.query(query, (error, results) => {
     if (error) {
@@ -64,11 +102,39 @@ app.get('/video', (req, res) => {
     }
 
     const latestUser = results[0].username;
-    res.render('video', { latestUser: latestUser }); 
+
+    // Query to get video information 
+    const videoQuery = 'SELECT * FROM videos ORDER BY id DESC LIMIT 9';
+
+    db.query(videoQuery, (videoError, videoResults) => {
+      if (videoError) {
+        console.error('Error executing video query:', videoError);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      const imagesArray = videoResults.map(video => ({ uuid: video.uuid, poster_filename: video.poster_filename, title: video.title, description: video.description, manifest_name: video.manifest_name }));
+
+      
+
+      const urlArray = imagesArray.map(image => ({
+        url: `http://localhost:9001/stream/${image.uuid}/${image.poster_filename}`,
+        title: image.title,
+        description: image.description,
+        videoUrl: `http://localhost:9001/stream/${image.uuid}/${image.manifest_name}`
+    }));
+    
+
+      //console.log(urlArray[5].url)
+
+      res.render('video', { latestUser: latestUser, urlArray: urlArray });
+    });
   });
 });
 
-// Video player
+
+
+
 
 
 
@@ -180,6 +246,7 @@ app.post('/auth/register', (req, res) => {
   // Write the data to the request body and end the request
   request.write(JSON.stringify(dataToSend));
   request.end();
+  //res.redirect('/login')
 });
 
 
@@ -225,3 +292,4 @@ function sendToAuth(data) {
 app.listen(8999, ()=> {
     console.log("Server started on port 8999")
 })
+

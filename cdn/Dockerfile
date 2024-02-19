@@ -31,7 +31,7 @@ RUN chown nonroot:nonroot /app/uploads
 RUN chmod 770 /app/uploads
 VOLUME /app/uploads
 
-EXPOSE 9000
+EXPOSE 9001
 
 USER nonroot:nonroot
 

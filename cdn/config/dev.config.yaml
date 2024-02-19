@@ -1,6 +1,6 @@
 server:
   host: localhost
-  port: 9000
+  port: 9001
 database:
   user: auth
   host: localhost

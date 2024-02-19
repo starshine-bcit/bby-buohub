@@ -34,24 +34,20 @@
         }
 
         /* Flexbox grid styles */
-        .video-grid {
+        .image-grid {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             margin-top: 20px;
         }
 
-        .video-item {
+        .image-container {
             width: calc(33.33% - 10px);
             margin-bottom: 20px;
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
             text-align: center;
         }
 
-        .video-item img {
+        .image-container img {
             max-width: 100%;
             height: auto;
             border-radius: 5px;
@@ -64,7 +60,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">
-          <img src="/logo.png" alt="Logo" width="auto" height="auto"></img>
+            <img src="/logo.png" alt="Logo" width="auto" height="auto">
         </a>
         <a>Current logged in as: {{ latestUser }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,59 +81,18 @@
         </div>
     </div>
 </nav>
-<!-- Body -->
+
 <div class="container mt-4">
-    <div class="mt-4 p-5 bg-primary text-white rounded">
-        <h1>Hello there! </h1>
-        <p>BbyBuoHub is a dockerized video streaming platform</p>
-    </div>
-    <!-- Video grid -->
-    <div class="video-grid">
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 1">
-            <h3>Title 1</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 2">
-            <h3>Title 2</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 3">
-            <h3>Title 3</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 4">
-            <h3>Title 4</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 5">
-            <h3>Title 5</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 6">
-            <h3>Title 6</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 7">
-            <h3>Title 7</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 8">
-            <h3>Title 8</h3>
-        </div>
-        <!-- Video item -->
-        <div class="video-item">
-            <img src="placeholder.jpg" alt="Video 9">
-            <h3>Title 9</h3>
-        </div>
+    <div>
+        <div class="image-grid">
+            {{#each urlArray}}
+            <div class="image-container">
+            <a href="{{this.videoUrl}}"><img src="{{this.url}}" alt="{{this.url}}"></a>
+            <h5> Title: {{this.title}} </h5>
+            <h6> Description: {{this.description}} </h6>
+            </div>
+        {{/each}}
+        </div>  
     </div>
 </div>
 
