@@ -1,0 +1,9 @@
+server:
+  host: localhost
+  port: 9000
+database:
+  user: auth
+  host: localhost
+  port: 3306
+  name: auth
+  pass: ""

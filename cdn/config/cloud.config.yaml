@@ -1,0 +1,10 @@
+server:
+  host: auth
+  port: 80
+  mpd_base_url: "http://cdn/stream"
+database:
+  user: auth
+  host: db
+  port: 6612
+  name: user
+  pass: ""
