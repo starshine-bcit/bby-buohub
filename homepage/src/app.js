@@ -1,312 +1,191 @@
 const express = require('express');
 const mysql = require("mysql");
-const dotenv = require('dotenv')
-const http = require('http');
-const app = express();
+require('dotenv').config();
 var favicon = require('serve-favicon')
 const path = require('path');
-//var cookieParser = require('cookie-parser')
-//const bcrypt = require("bcryptjs")
-const axios = require('axios');
-dotenv.config();
-//const mariadb = require('mariaDB');
+var cookieParser = require('cookie-parser');
+const axios = require('axios')
 
-// Enable CORS middleware
+const app = express();
+const authBaseURL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}`
+const cdnBaseURL = `http://${process.env.CDN_HOST}:${process.env.CDN_PORT}`
+
+
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT)
+});
+
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MariaDB:', err);
+    return;
+  }
+  console.log('Connected to the MariaDB');
+});
+
+app.set('view engine', 'hbs')
+app.use(cookieParser());
+app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
+const publicDir = path.join(__dirname, './public');
+app.use(express.static(publicDir));
+
+app.get("/register", (req, res) => {
+  res.render("register")
+})
+
+app.get("/login", (req, res) => {
+  res.render("login")
+})
+
+app.get("/ping", (req, res) => {
+  res.send("pong")
+})
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:9001');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
-
-
-//app.set('view engine', 'ejs');
-
-
-//const exphbs  = require('express-handlebars');
-
-//app.engine('.hbs', exphbs({ extname: '.hbs' }));
-//app.set('view engine', '.hbs');
-
-app.use(favicon(path.join(__dirname, './public', 'favicon.ico')))
-
-//app.use('/video', express.static(path.join(__dirname, './public')));
-
-
-
-const db = mysql.createConnection({
-    host: "db",
-    user: 'dbuser',
-    password: '123test',
-    database: 'bby',
-    port: 3306
-});
-
-//const pool = mariadb.createPool({
-//  host: "db",
-//  user: 'dbuser',
-//  password: '123test',
-//  database: 'bby',
-//  connectionLimit: 5
-//});
-
-//const db = mysql.createConnection({
-//    host: process.env.HOST,
-//    user: process.env.USER,
-//    password: process.env.PASSWORD,
-//    database: process.env.DATABASE
-//}); 
-
-
-// Connect to MySQL database
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MariaDB:', err);
-        return;
-    }
-    console.log('Connected to the MariaDB');
-});
- 
-
-app.set('view engine', 'hbs')
-
-// Route for Image Click
-app.get('/play/:uuid/:manifest_name', (req, res) => {
-  const uuid = req.params.uuid;
-  const manifestName = req.params.manifest_name;
-  
-  // Redirect to the video player page with UUID and manifest name as parameters
-  res.redirect(`/player/${uuid}/${manifestName}`);
-});
-
-// Route for Video Player Page
-app.get('/player/:uuid/:manifest_name', (req, res) => {
-  const uuid = req.params.uuid;
-  const manifestName = req.params.manifest_name;
-
-  const videoUrl = { url: `http://localhost:9001/stream/${uuid}/${manifestName}` }
- 
-  console.log(videoUrl.url)
-
-  res.render('player', { videoUrl: videoUrl.url });
-});
-
-
-app.get('/video', (req, res) => {
-  const cdn = process.env.CDN_HOST
-  
-  const query = `
-    SELECT username
-    FROM users
-    ORDER BY last_login DESC
-    LIMIT 1
-  `;
-
-
-  db.query(query, (error, results) => {
-    if (error) {
-      console.error('Error executing query:', error);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
-    if (results.length === 0) {
-      res.status(404).send('No users found');
-      return;
-    }
-
-    const latestUser = results[0].username;
-
-    // Query to get video information 
-    const videoQuery = 'SELECT * FROM videos ORDER BY id DESC LIMIT 9';
-
-    db.query(videoQuery, (videoError, videoResults) => {
-      if (videoError) {
-        console.error('Error executing video query:', videoError);
-        res.status(500).send('Internal Server Error');
+  const url = new URL(req.url, `http://${req.headers.host}`)
+  if (url.pathname === '/login' || url.pathname === '/register' || url.pathname === '/auth/login' || url.pathname === '/auth/register' || url.pathname === '/ping') {
+    next();
+    return
+  }
+  const authCookie = req.cookies.AuthToken;
+  const refreshCookie = req.cookies.RefreshToken;
+  if (authCookie === undefined || refreshCookie === undefined) {
+    res.redirect('/login');
+    return;
+  }
+  axios.post(`${authBaseURL}/auth`, {
+    accessToken: authCookie,
+    refreshToken: refreshCookie
+  })
+    .then((response) => {
+      if (response.status !== 202 || response.data.ok !== true) {
+        console.log(response);
+        res.redirect('/login');
         return;
       }
-
-      const imagesArray = videoResults.map(video => ({ uuid: video.uuid, poster_filename: video.poster_filename, title: video.title, description: video.description, manifest_name: video.manifest_name }));
-
-      
-
-      const urlArray = imagesArray.map(image => ({
-        url: `http://localhost:9001/stream/${image.uuid}/${image.poster_filename}`,
-        title: image.title,
-        description: image.description,
-        videoUrl: `http://localhost:9001/stream/${image.uuid}/${image.manifest_name}`,
-        uuid: image.uuid,
-        manifest_name: image.manifest_name
-    }));
-    
-
-      //console.log(urlArray[5].url)
-
-      res.render('video', { latestUser: latestUser, urlArray: urlArray });
-    });
-  });
+      if (response.data.newToken !== "") {
+        res.cookie('AuthToken', response.data.newToken, {
+          maxAge: 60 * 60 * 24,
+          path: '/'
+        })
+      }
+      next();
+      return;
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect('/login');
+      return;
+    })
 });
-
-
-
-
-
-
-
-// Define the directory for serving static files
-const publicDir = path.join(__dirname, './public');
-
-// Configure Express to serve static files from the public directory
-app.use(express.static(publicDir));
-
-app.get("/", (req, res) => {
-    res.render("index")
-})
-
-app.get("/register", (req, res) => {
-    res.render("register")
-})
-
-app.get("/login", (req, res) => {
-    res.render("login")
-})
-
-app.get("/video", (req, res) => {
-  res.render("video")
-})
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-//const axios = require('axios');
-
-
-//app.post("/auth/register", (req, res) => {  
-//    const { data }  = req.body 
-
-//    const url = 'http://localhost:9000/create'
-
-// Assuming this is your route handler
-//    axios.post(url, data)
-//    const { username, password, passwordConfirm } = req.body;
-    //console.log(req.body)
-  //    db.query('SELECT username FROM users WHERE username = ?', [username], async (error, result) => {
-    //    if(error) {
-    //        console.log(error);
-    //    }
-     //   if(result.length > 0) {
-      //      return res.render('register', {
-      //          message: 'This username is already in use'
-     //       });
-     //   } 
-        
-  //      if( password !== passwordConfirm) {
-    //        return res.render('register', {
-     //           message: 'Passwords do not match!'
-    //        });
-    //    }
-        
-       // let hashedPassword = await bcrypt.hash(password, 8);
-
-    //    db.query('INSERT INTO users SET ?', { username: username, password: password }, (err, result) => {
-    //        if(err) {
-    //            console.log(err);
-     //       } else {
-     //           return res.render('register', {
-      //              message: 'User registered!'
-      //          });
-    //        }
-   //     });
-  //  });
-//});
 app.post('/auth/register', (req, res) => {
-
-  // Retrieve the JSON object from the request body
-  const dataToSend = req.body;
-
-  // Configure the request details
-  const options = {
-    hostname: 'auth',
-    port: 9000,
-    path: '/create',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  };
-
-  // Create the request
-  const request = http.request(options, (response) => {
-    let responseData = '';
-
-    // Concatenate chunks of data
-    response.on('data', (chunk) => {
-      responseData += chunk;
-    });
-
-    // Once the response is complete, handle it
-    response.on('end', () => {
-      console.log('Response from server:', responseData);
-      res.send(responseData);
-    });
-  });
-
-  // Handle errors
-  request.on('error', (error) => {
-    console.error('Error sending request:', error);
-    res.status(500).send('Error sending request');
-  });
-  //res.redirect('/login');
-  //console.log('Cookies: ', req.cookies)
-  // Write the data to the request body and end the request
-  request.write(JSON.stringify(dataToSend));
-  request.end();
-  //res.redirect('/login')
+  axios.post(`${authBaseURL}/create`, req.body)
+    .then((response) => {
+      if (response.status !== 201 || response.data.created !== true) {
+        console.log(response);
+        res.redirect('/register');
+        return;
+      }
+      res.cookie('AuthToken', response.data.accessToken, {
+        maxAge: 60 * 60 * 24,
+        path: '/'
+      })
+      res.cookie('RefreshToken', response.data.refreshToken, {
+        maxAge: 60 * 60 * 24,
+        path: '/'
+      })
+      res.redirect('/video')
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect('/register');
+      return;
+    })
 });
-
 
 app.post('/auth/login', (req, res) => {
-  const dataToSend = req.body;
-  const loginOptions = {
-      hostname: 'auth',
-      port: 9000,
-      path: '/login',
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
+  axios.post(`${authBaseURL}/login`, req.body)
+    .then((response) => {
+      if (response.status !== 202 || response.data.valid !== true) {
+        console.log(response);
+        res.redirect('/login');
+        return;
       }
-  };
-
-  const loginRequest = http.request(loginOptions, (loginResponse) => {
-      let responseData = '';
-      loginResponse.on('data', (chunk) => {
-          responseData += chunk;
-      });
-      loginResponse.on('end', () => {
-          console.log('Response from /auth/login:', responseData);
-          sendToAuth(responseData);
-          res.redirect('/video');
-      });
-  });
-
-  // Write the data to the request body for /auth/login and end the request
-  loginRequest.write(JSON.stringify(dataToSend));
-  loginRequest.end();
+      res.cookie('AuthToken', response.data.accessToken, {
+        maxAge: 60 * 60 * 24,
+        path: '/'
+      })
+      res.cookie('RefreshToken', response.data.refreshToken, {
+        maxAge: 60 * 60 * 24,
+        path: '/'
+      })
+      res.redirect('/video')
+    })
+    .catch((error) => {
+      console.log(error);
+      res.redirect('/login');
+      return;
+    })
 });
 
-function sendToAuth(data) {
-  axios.post('http://auth:9000/auth', data)
-      .then(response => {
-          console.log('Data sent to auth endpoint successfully.');
-      })
-      .catch(error => {
-          console.error('Error sending data to auth endpoint:', error);
-      });
-}
 
-app.listen(8999, ()=> {
-    console.log("Server started on port 8999")
+
+app.get('/play/:uuid/:manifest_name', (req, res) => {
+  const uuid = req.params.uuid;
+  const manifestName = req.params.manifest_name;
+
+  res.redirect(`/player/${uuid}/${manifestName}`);
+});
+
+app.get('/player/:uuid/:manifest_name', (req, res) => {
+  const uuid = req.params.uuid;
+  const manifestName = req.params.manifest_name;
+  const videoUrl = {
+    url: `${cdnBaseURL}/stream/${uuid}/${manifestName}`,
+    poster: `${cdnBaseURL}/stream/${uuid}/thumb.png`
+  }
+  res.render('player', videoUrl);
+});
+
+app.get('/video', (req, res) => {
+  const videoQuery = 'SELECT * FROM videos ORDER BY id DESC LIMIT 9';
+  db.query(videoQuery, (videoError, videoResults) => {
+    if (videoError) {
+      console.error('Error executing video query:', videoError);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    const imagesArray = videoResults.map(video => ({ uuid: video.uuid, poster_filename: video.poster_filename, title: video.title, description: video.description, manifest_name: video.manifest_name }));
+    const urlArray = imagesArray.map(image => ({
+      url: `${cdnBaseURL}/stream/${image.uuid}/${image.poster_filename}`,
+      title: image.title,
+      description: image.description,
+      videoUrl: `${cdnBaseURL}/stream/${image.uuid}/${image.manifest_name}`,
+      uuid: image.uuid,
+      manifest_name: image.manifest_name
+    }));
+    res.render('video', { urlArray: urlArray });
+  });
+});
+
+app.get("/", (req, res) => {
+  res.render("index")
+})
+
+app.listen(8999, () => {
+  console.log("Server started on port 8999")
 })
 

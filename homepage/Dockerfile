@@ -8,6 +8,8 @@ RUN npm install
 
 COPY src ./src/
 
+COPY .env .env
+
 COPY views ./views/
 
 EXPOSE 8999

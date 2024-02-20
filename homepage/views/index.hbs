@@ -1,72 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
     <style>
         /* Adjusting colors to match the desired scheme */
         body {
-            background-color: #000; /* Black background */
-            color: #ff9900; /* Orange text color */
+            background-color: #000;
+            /* Black background */
+            color: #ff9900;
+            /* Orange text color */
         }
 
         .navbar-dark .navbar-nav .nav-link {
-            color: #ff9900; /* Orange color for links in navbar */
+            color: #ff9900;
+            /* Orange color for links in navbar */
         }
 
         .navbar-dark .navbar-nav .nav-link:hover {
-            color: #ffcc66; /* Lighter orange color on hover for navbar links */
+            color: #ffcc66;
+            /* Lighter orange color on hover for navbar links */
         }
 
         .navbar-dark .navbar-brand {
-            color: #ff9900; /* Orange color for navbar brand */
+            color: #ff9900;
+            /* Orange color for navbar brand */
         }
 
         .navbar-dark .navbar-toggler-icon {
-            color: #ff9900; /* Orange color for navbar toggler icon */
+            color: #ff9900;
+            /* Orange color for navbar toggler icon */
         }
 
         .bg-primary {
-            background-color: #ff9900 !important; /* Orange background for primary content */
+            background-color: #ff9900 !important;
+            /* Orange background for primary content */
         }
 
         .bg-primary.text-white {
-            color: #fff !important; /* White text color for primary content */
+            color: #fff !important;
+            /* White text color for primary content */
         }
     </style>
 </head>
+
 <body>
 
-<!-- Navigation links -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-          <img src="/logo.png" alt="Logo" width="auto" height="auto"></img>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
-                </li>
-            </ul>
+    <!-- Navigation links -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/logo.png" alt="Logo" width="auto" height="auto"></img>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/video">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Body -->
+    <div class="container mt-4">
+        <div class="mt-4 p-5 bg-primary text-white rounded">
+            <h1>Hello there! </h1>
+            <p> BbyBuoHub is a dockerized video streaming platform</p>
         </div>
     </div>
-</nav>
-<!-- Body -->
-<div class="container mt-4">
-    <div class="mt-4 p-5 bg-primary text-white rounded">
-        <h1>Hello there! </h1>
-        <p> BbyBuoHub is a dockerized video streaming platform</p>
-    </div>
-</div>
 
 </body>
+
 </html>
