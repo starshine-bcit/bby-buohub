@@ -2,18 +2,26 @@ FROM node:latest
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+RUN addgroup --system nonroot && adduser --system nonroot --ingroup nonroot
+
+RUN apt update && apt upgrade -y
+
+RUN apt install -y curl dumb-init
+
+COPY --chown=nonroot:nonroot --chmod=440 package*.json ./
 
 RUN npm install
 
-COPY src ./src/
+USER nonroot:nonroot
 
-COPY .env .env
+COPY --chown=nonroot:nonroot --chmod=550 src ./src/
 
-COPY views ./views/
+COPY --chown=nonroot:nonroot --chmod=440 .env .env
+
+COPY --chown=nonroot:nonroot --chmod=550 views ./views/
 
 EXPOSE 8999
 
-#USER nonroot:nonroot
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-CMD [ "node", "./src/app.js"]
+CMD ["node", "./src/app.js"]
