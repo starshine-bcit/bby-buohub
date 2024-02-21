@@ -161,7 +161,7 @@ app.get('/player/:uuid/:manifest_name', (req, res) => {
 });
 
 app.get('/video', (req, res) => {
-  const videoQuery = 'SELECT * FROM videos ORDER BY id DESC LIMIT 9';
+  const videoQuery = 'SELECT * FROM videos WHERE process_complete = true ORDER BY id DESC LIMIT 9';
   db.query(videoQuery, (videoError, videoResults) => {
     if (videoError) {
       console.error('Error executing video query:', videoError);
