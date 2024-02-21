@@ -72,7 +72,7 @@ app.use((req, res, next) => {
         res.redirect('/login');
         return;
       }
-      if (response.data.newToken !== "") {
+      if (response.data.newToken.refreshed === true) {
         res.cookie('AuthToken', response.data.newToken, {
           maxAge: 60 * 60 * 24,
           path: '/'
