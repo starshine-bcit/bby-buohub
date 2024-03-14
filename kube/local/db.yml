@@ -1,0 +1,88 @@
+# kubectl create secret generic mariadb-secret --from-literal=mariadb-root-password= --from-literal=mariadb-user-password=
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - protocol: TCP
+      port: 6612
+      targetPort: 3306
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-pv-claim
+  labels:
+    app: mariadb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500M
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  minReadySeconds: 15
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb-od
+          image: mariadb:latest
+          ports:
+            - containerPort: 3306
+          livenessProbe:
+            exec:
+              command:
+                - healthcheck.sh
+                - --connect
+                - --innodb_initialized
+            periodSeconds: 5
+          startupProbe:
+            exec:
+              command:
+                - healthcheck.sh
+                - --connect
+                - --innodb_initialized
+            failureThreshold: 10
+            periodSeconds: 10
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: mariadb-root-password
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: mariadb-user-password
+            - name: MARIADB_DATABASE
+              value: bby
+            - name: MARIADB_USER
+              value: dbuser
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+      volumes:
+        - name: mariadb-pv
+          persistentVolumeClaim:
+            claimName: mariadb-pv-claim
