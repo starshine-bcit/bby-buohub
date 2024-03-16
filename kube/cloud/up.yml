@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bby-up-deploy
+  labels:
+    app: up
+spec:
+  selector:
+    matchLabels:
+      app: up
+  replicas: 2
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: up
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: up-pod
+          image: starshinebit/up:v1
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "6001"
+            - name: NODE_ENV
+              value: production
+            - name: ORIGIN
+              value: "https://bby.hierarch.live"
+            - name: BODY_SIZE_LIMIT
+              value: "5368709120"
+          ports:
+            - containerPort: 6001
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 6001
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /login
+              port: 6001
+            failureThreshold: 4
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"

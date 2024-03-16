@@ -1,0 +1,40 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: up-healthcheck
+spec:
+  default:
+    checkIntervalSec: 10
+    timeoutSec: 10
+    logConfig:
+      enabled: true
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 6001
+        host: "bby.hierarch.live"
+        requestPath: "/login"
+  targetRef:
+    group: ""
+    kind: Service
+    name: up
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: cdn-healthcheck
+spec:
+  default:
+    checkIntervalSec: 10
+    timeoutSec: 10
+    logConfig:
+      enabled: true
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 9001
+        requestPath: "/ping"
+  targetRef:
+    group: ""
+    kind: Service
+    name: cdn
