@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: up
-  replicas: 1
+  replicas: 2
   minReadySeconds: 15
   strategy:
     type: RollingUpdate
@@ -46,7 +46,7 @@ spec:
             httpGet:
               path: /login
               port: 6001
-            failureThreshold: 4
+            failureThreshold: 8
             periodSeconds: 5
           resources:
             requests:
