@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: cdn
   replicas: 1
-  minReadySeconds: 5
+  minReadySeconds: 15
   strategy:
     type: RollingUpdate
     rollingUpdate:

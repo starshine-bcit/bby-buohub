@@ -1,0 +1,44 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: cdn
+  name: cdn-hpa
+spec:
+  maxReplicas: 50
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: bby-cdn-deploy
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: auth
+  name: auth-hpa
+spec:
+  maxReplicas: 50
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: bby-auth-deploy
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: up
+  name: up-hpa
+spec:
+  maxReplicas: 50
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: bby-up-deploy

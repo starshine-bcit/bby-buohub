@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: mariadb
-  minReadySeconds: 15
+  minReadySeconds: 20
   template:
     metadata:
       labels:

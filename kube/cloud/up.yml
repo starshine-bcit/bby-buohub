@@ -8,8 +8,8 @@ spec:
   selector:
     matchLabels:
       app: up
-  replicas: 2
-  minReadySeconds: 5
+  replicas: 1
+  minReadySeconds: 15
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -54,4 +54,4 @@ spec:
               cpu: "250m"
             limits:
               memory: "1024Mi"
-              cpu: "500m"
+              cpu: "1000m"
