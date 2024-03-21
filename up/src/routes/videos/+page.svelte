@@ -39,7 +39,9 @@
             <h3>{video.title}</h3>
             <p>Description: {video.description}</p>
             <p>
-                <img src={video.url} alt={video.title} />
+                <a href="{video.videoUrl}">
+                    <img src={video.url} alt={video.title}>
+                </a>
             </p>
         </div>
     {/each}

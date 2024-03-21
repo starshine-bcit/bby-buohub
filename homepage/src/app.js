@@ -62,7 +62,7 @@ app.use((req, res, next) => {
     res.redirect('/login');
     return;
   }
-  axios.post(`${authBaseURL}/auth`, {
+  axios.post(`http://localhost:9000/auth`, {
     accessToken: authCookie,
     refreshToken: refreshCookie
   })
@@ -92,7 +92,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.post('/auth/register', (req, res) => {
-  axios.post(`${authBaseURL}/create`, req.body)
+  axios.post(`http://localhost:9000/create`, req.body)
     .then((response) => {
       if (response.status !== 201 || response.data.created !== true) {
         console.log(response);
@@ -117,7 +117,7 @@ app.post('/auth/register', (req, res) => {
 });
 
 app.post('/auth/login', (req, res) => {
-  axios.post(`${authBaseURL}/login`, req.body)
+  axios.post(`http://localhost:9000/login`, req.body)
     .then((response) => {
       if (response.status !== 202 || response.data.valid !== true) {
         console.log(response);
