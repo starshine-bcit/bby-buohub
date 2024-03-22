@@ -39,7 +39,7 @@
             <h3>{video.title}</h3>
             <p>Description: {video.description}</p>
             <p>
-                <a href="{video.videoUrl}">
+                <a href="/player/{video.uuid}/{video.manifest_name}">
                     <img src={video.url} alt={video.title}>
                 </a>
             </p>

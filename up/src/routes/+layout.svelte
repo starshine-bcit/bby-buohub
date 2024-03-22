@@ -20,9 +20,6 @@
 					<a class="nav-link" href="/videos">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/videos">Videos</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="/">Upload</a>
 				</li>
 				<li class="nav-item">

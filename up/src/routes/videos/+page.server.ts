@@ -16,6 +16,10 @@ export async function load() {
 	};
 }
 
+/**https://learn.svelte.dev/tutorial/redirects REMINDER*/
+
+/**https://learn.svelte.dev/tutorial/handle */
+
 //import * as db from '$lib/db';
 
 
