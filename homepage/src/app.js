@@ -62,7 +62,7 @@ app.use((req, res, next) => {
     res.redirect('/login');
     return;
   }
-  axios.post(`${authBaseURL}/auth`, {
+  axios.post(`http://localhost:9000/auth`, {
     accessToken: authCookie,
     refreshToken: refreshCookie
   })
@@ -92,7 +92,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.post('/auth/register', (req, res) => {
-  axios.post(`${authBaseURL}/create`, req.body)
+  axios.post(`http://localhost:9000/create`, req.body)
     .then((response) => {
       if (response.status !== 201 || response.data.created !== true) {
         console.log(response);
@@ -117,7 +117,7 @@ app.post('/auth/register', (req, res) => {
 });
 
 app.post('/auth/login', (req, res) => {
-  axios.post(`${authBaseURL}/login`, req.body)
+  axios.post(`http://localhost:9000/login`, req.body)
     .then((response) => {
       if (response.status !== 202 || response.data.valid !== true) {
         console.log(response);
@@ -154,8 +154,8 @@ app.get('/player/:uuid/:manifest_name', (req, res) => {
   const uuid = req.params.uuid;
   const manifestName = req.params.manifest_name;
   const videoUrl = {
-    url: `${cdnBaseURL}/stream/${uuid}/${manifestName}`,
-    poster: `${cdnBaseURL}/stream/${uuid}/thumb.png`
+    url: `http://localhost:9001/stream/${uuid}/${manifestName}`,
+    poster: `http://localhost:9001/stream/${uuid}/thumb.png`
   }
   res.render('player', videoUrl);
 });
@@ -170,10 +170,10 @@ app.get('/video', (req, res) => {
     }
     const imagesArray = videoResults.map(video => ({ uuid: video.uuid, poster_filename: video.poster_filename, title: video.title, description: video.description, manifest_name: video.manifest_name }));
     const urlArray = imagesArray.map(image => ({
-      url: `${cdnBaseURL}/stream/${image.uuid}/${image.poster_filename}`,
+      url: `http://localhost:9001/stream/${image.uuid}/${image.poster_filename}`,
       title: image.title,
       description: image.description,
-      videoUrl: `${cdnBaseURL}/stream/${image.uuid}/${image.manifest_name}`,
+      videoUrl: `http://localhost:9001/stream/${image.uuid}/${image.manifest_name}`,
       uuid: image.uuid,
       manifest_name: image.manifest_name
     }));
