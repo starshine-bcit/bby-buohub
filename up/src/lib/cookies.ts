@@ -1,3 +1,4 @@
 export const AuthCookieName = 'AuthorizationToken';
 export const RefreshCookieName = 'RefreshToken';
-export const ProtectedRoutes = ['/'];
+export const ProtectedRoutes = ['/', '/upload'];
+export const ProtectedRouteStart = '/player';

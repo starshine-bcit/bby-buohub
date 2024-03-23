@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: up-pod
-          image: starshinebit/up:v1
+          image: starshinebit/up:v6
           env:
             - name: HOST
               value: "0.0.0.0"

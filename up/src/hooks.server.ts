@@ -1,10 +1,18 @@
 import { redirect } from '@sveltejs/kit';
 import { postAuth } from '$lib/auth';
-import { RefreshCookieName, AuthCookieName, ProtectedRoutes } from '$lib/cookies';
+import {
+	RefreshCookieName,
+	AuthCookieName,
+	ProtectedRoutes,
+	ProtectedRouteStart
+} from '$lib/cookies';
 import type { HandleFetch, Handle } from '@sveltejs/kit';
 
 export const handle = (async ({ event, resolve }) => {
-	if (ProtectedRoutes.includes(event.url.pathname)) {
+	if (
+		ProtectedRoutes.includes(event.url.pathname) ||
+		event.url.pathname.startsWith(ProtectedRouteStart)
+	) {
 		let okay = false;
 		const authCookie = event.cookies.get(AuthCookieName);
 		const refreshCookie = event.cookies.get(RefreshCookieName);
@@ -37,7 +45,7 @@ export const handle = (async ({ event, resolve }) => {
 
 export const handleFetch = (async ({ request, fetch, event }) => {
 	const url = new URL(request.url);
-	if (ProtectedRoutes.includes(url.pathname)) {
+	if (ProtectedRoutes.includes(url.pathname) || url.pathname.startsWith(ProtectedRouteStart)) {
 		let okay = false;
 		const authCookie = event.cookies.get(AuthCookieName);
 		const refreshCookie = event.cookies.get(RefreshCookieName);

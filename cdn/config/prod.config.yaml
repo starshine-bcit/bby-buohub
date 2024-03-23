@@ -1,7 +1,7 @@
 server:
   host: "0.0.0.0"
   port: 9001
-  mpd_base_url: "http://localhost:9001/stream"
+  mpd_base_url: "https://bby.hierarch.live/stream"
 database:
   user: dbuser
   host: db

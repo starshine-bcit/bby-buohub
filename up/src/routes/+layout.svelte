@@ -17,10 +17,7 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto">
 				<li class="nav-item">
-					<a class="nav-link" href="/videos">Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/">Upload</a>
+					<a class="nav-link" href="/">Home</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/login">Login</a>
@@ -28,7 +25,9 @@
 				<li class="nav-item">
 					<a class="nav-link" href="/register">Register</a>
 				</li>
-			
+				<li class="nav-item">
+					<a class="nav-link" href="/upload">Upload</a>
+				</li>
 			</ul>
 		</div>
 	</div>
