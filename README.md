@@ -6,6 +6,24 @@ bby-buohub is a simple micro-services based containerized video streaming platfo
 
 Sasha, Dennis
 
+## Overview
+
+bby-buohub is composed of 4 services.
+
+The auth service is responsible for handling user login, registration, and
+issues and validates JWTs. It is not meant to be publicly accessible, instead
+being called by the frontend server.
+
+The cdn service implements an internal /upload endpoint. Files are processed
+through a custom multimedia pipeline which takes advantage of GPAC and ffmpeg.
+Once an upload is processed, it is available as an MPEG-DASH stream through
+a static file server on this service.
+
+The up service is the unified frontend, which allows users to login, register,
+upload, and stream videos. Streaming is implemented in the browser with dash.js and video.js
+
+Finally, the db service is just a simple MariaDB instance.
+
 ## Componenets
 
 ### Docker-Compose
