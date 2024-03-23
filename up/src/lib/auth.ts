@@ -1,4 +1,4 @@
-import { AUTH_HOST, AUTH_PORT, CDN_HOST, CDN_PORT } from '$env/static/private';
+import { AUTH_HOST, AUTH_PORT, CDN_INTERNAL_HOST, CDN_PORT } from '$env/static/private';
 
 interface loginResponse {
 	valid: boolean;
@@ -109,7 +109,7 @@ export const postUpload = async (file: File, uuid: string): Promise<boolean> => 
 	const form = new FormData();
 	form.append('file', file);
 	form.append('uuid', uuid);
-	const req = new Request(`http://${CDN_HOST}:${CDN_PORT}/upload`, {
+	const req = new Request(`http://${CDN_INTERNAL_HOST}:${CDN_PORT}/upload`, {
 		method: 'POST',
 		body: form
 	});

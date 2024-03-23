@@ -1,26 +1,16 @@
-import { postUpload } from '$lib/auth';
-import { insertNewVideo } from '$lib/db';
+import { queryDatabase } from '$lib/query';
+import { CDN_HOST } from '$env/static/private';
 
-export const actions = {
-	default: async ({ request }) => {
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
-		const title = formData.get('title');
-		const description = formData.get('description');
-		if (!file.name) {
-			return { err: 'Bad choice!' };
-		}
-		if (!title || !description) {
-			return { err: 'Bad input!' };
-		}
-		const insRes = await insertNewVideo(String(title), String(description));
-		if (!insRes.ok) {
-			return { err: 'Failed to insert into database!' };
-		}
-		const uploadOk = await postUpload(file, String(insRes.uuid));
-		if (uploadOk) {
-			return;
-		}
-		return { err: 'Invalid upload!' };
-	}
+export const load = async () => {
+	const urlArray = await queryDatabase();
+	return {
+		urlArray: urlArray.map((video) => ({
+			url: `https://${CDN_HOST}/stream/${video.uuid}/thumb.png`,
+			title: video.title,
+			description: video.description,
+			videoUrl: `https://${CDN_HOST}/stream/${video.uuid}/${video.manifest_name}`,
+			uuid: video.uuid,
+			manifest_name: video.manifest_name
+		}))
+	};
 };

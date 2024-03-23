@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
         - name: cdn-pod
-          image: starshinebit/cdn:v1
+          image: starshinebit/cdn:v2
           env:
             - name: SERVER_ENV
               value: prod

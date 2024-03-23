@@ -32,7 +32,10 @@ spec:
   hostnames:
     - "bby.hierarch.live"
   rules:
-    - backendRefs:
+    - matches:
+      - path:
+          value: /
+      backendRefs:
         - name: up
           port: 6001
     - matches:
