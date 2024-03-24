@@ -1,0 +1,46 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: bby-redirect-routes
+  namespace: gateway-infra
+  labels:
+    gateway: external-http
+spec:
+  parentRefs:
+    - name: external-http
+      namespace: gateway-infra
+      sectionName: http
+  hostnames:
+    - "bby.hierarch.live"
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: bby-external-routes
+  labels:
+    gateway: external-http
+spec:
+  parentRefs:
+    - name: external-http
+      namespace: gateway-infra
+      sectionName: https
+  hostnames:
+    - "bby.hierarch.live"
+  rules:
+    - matches:
+      - path:
+          value: /
+      backendRefs:
+        - name: up
+          port: 6001
+    - matches:
+        - path:
+            value: /stream
+      backendRefs:
+        - name: cdn
+          port: 9001

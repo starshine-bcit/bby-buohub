@@ -1,10 +1,28 @@
 # bby-buohub
 
-bby-buohub is a simple micro-services based containerized video streaming platform.
+bby-buohub is a simple micro-services based containerized video streaming platform which can be run via Kubernetes or Docker Compose.
 
 ## Team members
 
-Sasha, Dennis, Jose
+Sasha, Dennis
+
+## Overview
+
+bby-buohub is composed of 4 services.
+
+The auth service is responsible for handling user login, registration, and
+issues and validates JWTs. It is not meant to be publicly accessible, instead
+being called by the frontend server.
+
+The cdn service implements an internal /upload endpoint. Files are processed
+through a custom multimedia pipeline which takes advantage of GPAC and ffmpeg.
+Once an upload is processed, it is available as an MPEG-DASH stream through
+a static file server on this service.
+
+The up service is the unified frontend, which allows users to login, register,
+upload, and stream videos. Streaming is implemented in the browser with dash.js and video.js
+
+Finally, the db service is just a simple MariaDB instance.
 
 ## Componenets
 
@@ -29,6 +47,15 @@ Once those steps are complete you should be able to build and run the images!
 
 To do that, run `docker-compose build && docker-compose up -d`
 
+### Kubernetes
+
+In the `kube/cloud` folder, there are a number of Kubernetes config files
+which allow one to deploy bby-buohub on GKE. If you wanted to run this
+yourself, you will need to precreate the cluster and also setup a
+staticIPand google-managed ssl certificate, in addition to pointing your
+domain to that static IP. Finally, be sure to configure and build each of
+the 3 service images.
+
 ### Auth
 
 [See the readme here](./auth/README.md)
@@ -41,9 +68,11 @@ To do that, run `docker-compose build && docker-compose up -d`
 
 [See the readme here](./up/README.md)
 
-### Home
+### Homepage
 
-[See the readme here](./homepage/README.md)
+The homepage service has been merged into the up service,
+presenting a unified and scalable frontend. Users can now login,
+register, upload, and view content more easily.
 
 ### Genkey
 

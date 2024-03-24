@@ -20,13 +20,13 @@
 					<a class="nav-link" href="/">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/">Upload</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="/login">Login</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/register">Register</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/upload">Upload</a>
 				</li>
 			</ul>
 		</div>

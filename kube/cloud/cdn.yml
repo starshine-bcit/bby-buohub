@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bby-cdn-deploy
+  labels:
+    app: cdn
+spec:
+  selector:
+    matchLabels:
+      app: cdn
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: cdn
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: cdn-pod
+          image: starshinebit/cdn:v2
+          env:
+            - name: SERVER_ENV
+              value: prod
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: mariadb-user-password
+            - name: GIN_MODE
+              value: release
+          ports:
+            - containerPort: 9001
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9001
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /ping
+              port: 9001
+            failureThreshold: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "2048Mi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: cdn-pv
+              mountPath: /app/uploads
+      volumes:
+        - name: cdn-pv
+          persistentVolumeClaim:
+            claimName: cdn-pv-claim
+      securityContext:
+        fsGroup: 101
